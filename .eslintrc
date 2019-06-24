@@ -1,7 +1,12 @@
 {
     "extends":"eslint:recommended",
     "parserOptions": {
-        "ecmaVersion": 6
+        "ecmaVersion": 6,
+        "sourceType":"module",
+        "ecmaFeatures":{
+            "jsx":true
+        }
+
     },
     "env": {
         "node":true,
@@ -10,6 +15,10 @@
     },
     "rules": {
         "comma-dangle":"off",
-        "no-unused-vars":"warn"
+        "no-unused-vars":"warn",
+        "import/prefer-default-export":"on",
+        "import/first":"on",
+        "no-console":"off"
+
     }
 }
