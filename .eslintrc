@@ -18,12 +18,7 @@
         "no-unused-vars":"warn",
         "import/prefer-default-export":"on",
         "import/first":"on",
-<<<<<<< HEAD
-        "no-console":"off"
-=======
         "no-console":"off",
         "no-dupe-class-members":"warn"
-
->>>>>>> c97efa113da4a5083cf047f8aa76f2c4952fe607
     }
 }
