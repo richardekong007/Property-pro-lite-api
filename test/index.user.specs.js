@@ -26,7 +26,7 @@ const request = supertest(app);
 const expect = chai.expect;
 const aUser = createUser();
 const resBodyKeys = ["status","data"];
-const userResDataKeys = ["token","id","first_name","last_name","email","password","phoneNumber","address","is_admin"];
+const userResDataKeys = ["token",... Object.keys(aUser)];
 
 
 beforeEach((done) =>{
