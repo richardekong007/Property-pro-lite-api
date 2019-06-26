@@ -44,9 +44,10 @@ class StoreManager {
 
     // eslint-disable-next-line no-dupe-class-members
     findAll (key, val){
+        const records = this.store.filter(record => record[key] === val);
+        let found = records.length > 0;
         return new Promise((res, rej) =>{
-            const records = this.store.filter(record => record[key] === val);
-            if (records.length > 0){
+            if (found){
                 res(records);
             }else{
                 rej(new Error('No records'));
