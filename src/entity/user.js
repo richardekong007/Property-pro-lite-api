@@ -35,7 +35,7 @@ class User {
 
             setPassword (password){
                 this.password = password;
-                return password;
+                return this;
             }
 
             setPhoneNumber (phone){
@@ -48,7 +48,7 @@ class User {
                 return this;
             }
 
-            setIsAdmin (predicate) {
+            setIsAdmin (predicate){
                 this.is_admin = predicate;
                 return this;
             }
