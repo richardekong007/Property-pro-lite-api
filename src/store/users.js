@@ -7,8 +7,6 @@ const user1 = new User.Builder()
     .setEmail('kong@mail.net')
     .setAddress('No.5 Makspeson Avenue')
     .setPhoneNumber('0803737646')
-    .setPassword('@#%^@$*')
-    .setIsAdmin(true)
     .build();
 
 const user2 = new User.Builder()
@@ -18,8 +16,6 @@ const user2 = new User.Builder()
     .setEmail('hong@mail.net')
     .setAddress('No.5 green Avenue')
     .setPhoneNumber('0869737646')
-    .setPassword('/%^3#(*$')
-    .setIsAdmin(true)
     .build();    
 
 const user3 = new User.Builder()
@@ -29,9 +25,19 @@ const user3 = new User.Builder()
     .setEmail('bong@mail.net')
     .setAddress('No.2 RedVille circle')
     .setPhoneNumber('0803737435')
-    .setPassword('!@&*#@')
-    .setIsAdmin(true)
-    .build();    
+    .build();  
+    
+//since compiler will  not accept over 7 lines of method chains
+user1.password = '@#%^@$*';
+user1.is_admin = true;
+
+user2.password = '/%^3#(*$';
+user2.is_admin = true;
+
+user3.password = '!@&*#@';
+user3.is_admin = true;
+
+
 
 const users = [user1, user2, user3];
 

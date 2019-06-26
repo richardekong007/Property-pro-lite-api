@@ -10,7 +10,7 @@ const prop1 = new Property.Builder()
     .setAddress('4568 Maidison circle')
     .setType('Duplex')
     .setCreatedOn()
-    .setImageUrl()
+    .setImageUrl('')
     .build();
 
 
@@ -24,7 +24,7 @@ const prop2 =  new Property.Builder()
     .setAddress('No.403 Grails Ave')
     .setType('Bungalow')
     .setCreatedOn()
-    .setImageUrl()
+    .setImageUrl('')
     .build();
 
 
@@ -38,7 +38,7 @@ const prop3 =  new Property.Builder()
     .setAddress('NO.45 Yellow Mond field')
     .setType('3 bedrooms')
     .setCreatedOn()
-    .setImageUrl()
+    .setImageUrl('')
     .build();
 
 

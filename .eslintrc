@@ -20,6 +20,5 @@
         "import/first":"on",
         "no-console":"off",
         "no-dupe-class-members":"warn"
-
     }
 }
