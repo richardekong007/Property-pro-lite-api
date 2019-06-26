@@ -1,3 +1,4 @@
+
 class StoreManager {
 
     constructor(store) {
@@ -9,20 +10,49 @@ class StoreManager {
     }
 
     insert (entity){
-        this.store.push(entity);
+        return new Promise((res, rej) =>{
+            if (this.store.push(entity)){
+                res(this.store[this.store.length-1])
+            }else{
+                rej(new Error('Failed to create record'))
+            }
+        });
     }
 
     findById (id){
-        return this.store.find(({id:theId}) => theId === id);
+        return new Promise((res, rej) =>{
+            const record = this.store.find(({id:theId}) => theId === id);
+            if (record){
+                res(record)
+            }else{
+                rej(new Error('No record'))
+            }
+        });
     }
 
     findAll (){
-        return this.store;
+        return new Promise((res, rej) =>{
+            const records = this.store;
+            if (records){
+                res(records);
+            }else{
+                rej(new Error('No records'));
+            }
+        });
+    
     }
 
     // eslint-disable-next-line no-dupe-class-members
     findAll (key, val){
-        return this.store.filter(record => record[key] === val);
+        return new Promise((res, rej) =>{
+            const records = this.store.filter(record => record[key] === val);
+            if (records.length > 0){
+                res(records);
+            }else{
+                rej(new Error('No records'));
+            }
+        });
+        
     }
 
     update(id, data){
@@ -38,7 +68,13 @@ class StoreManager {
                     }
             });
         }
-        return updated;
+        return new Promise((res, rej) =>{
+            if (updated){
+                res(recordToUpdate);
+            }else{
+                rej(new Error('Operation unsuccessful'));
+            }
+        });
     }
 
     delete (id){
@@ -50,8 +86,36 @@ class StoreManager {
           }
           deleted = size > store.length;
         });
-        return deleted;
-    }		
+        
+        return new Promise((res, rej) => {
+            if (deleted){
+                res('operation successful')
+            }else{
+                rej(new Error('Operation unsuccessful'));
+            }
+        });
+    }	
+    
+    erase (){
+        this.store.splice(0, this.store.length);
+        let erased = this.store.length === 0;
+        return new Promise((res, rej) =>{
+            if (erased){
+                res("Operation successful");
+            }else{
+                rej("Operation unsuccessful");
+            }
+        });
+
+    }
+
+    unmount (){
+        this.store = [];
+        const unmounted = this.store.length === 0;
+        return new Promise((res) =>{
+            if(unmounted) res('Operation successful');
+        });
+    }
 }
 
 export default StoreManager;
