@@ -71,6 +71,18 @@ appV1.patch(`/property/:id/:${"sold"}`, (req, res) =>{
         }));
 });
 
+appV1.delete("/property/:id", (req,res) =>{
+    propertyStore.delete(req.params.id)
+        .then(result =>{
+            res.status(200).json({
+                status:"success",
+                data:{message: result}
+            })
+        })
+        .catch(err => res.status(412).json({
+            status:"error", error:err.message
+        }));
+});
 
 
 export default appV1;
