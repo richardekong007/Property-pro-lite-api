@@ -112,4 +112,18 @@ appV1.get("/property/type", (req, res) =>{
         }));
 });
 
+appV1.get("/property/:id", (req, res) =>{
+    propertyStore.findById(req.params.id)
+        .then(result => {
+            delete result.owner;
+            res.status(200).json({
+                status:"success",
+                data:result
+            })
+        })
+        .catch(err=> res.status(412).json({
+            status:"error", error:err.message
+        }))
+});
+
 export default appV1;
