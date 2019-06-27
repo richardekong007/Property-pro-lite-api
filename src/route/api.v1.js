@@ -43,7 +43,19 @@ appV1.post("/property", (req, res) => {
         }));
 });
 
-
+appV1.patch("/property/:id", (req,res) =>{
+    propertyStore.update(req.params.id, req.body)
+        .then(result => {
+            delete result.owner;
+            res.status(201).json({
+                status:"success",
+                data:result
+            })
+        })
+        .catch(err => res.status(412).json({
+            status:"error", error:err.message
+        }));
+});
 
 
 
