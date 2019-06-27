@@ -1,9 +1,11 @@
 import Router from "express";
 import StoreManager from "../store/storeManager.js";
 import users from "../store/users.js";
+import properties from "../store/properties.js";
 
 const appV1 = Router();
 const userStore = StoreManager.mount(users);
+const propertyStore = StoreManager.mount(properties);
 
 appV1.post("/auth/signup", (req,res)=>{
     userStore.insert(req.body)
@@ -23,6 +25,12 @@ appV1.post("/auth/signup", (req,res)=>{
             status:"error", error:err.message
         }));
 });
+
+appV1.post("/auth/signin", (req, res) => {
+    
+});
+
+
 
 
 export default appV1;
