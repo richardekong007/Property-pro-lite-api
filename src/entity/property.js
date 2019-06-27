@@ -29,7 +29,7 @@ class Property {
 
             setStatus (status){
                 this.status = status;
-                return status;
+                return this;
             }
 
             setPrice (price){

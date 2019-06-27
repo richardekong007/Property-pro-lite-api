@@ -35,7 +35,7 @@ class User {
 
             setPassword (password){
                 this.password = password;
-                return password;
+                return this;
             }
 
             setPhoneNumber (phone){
