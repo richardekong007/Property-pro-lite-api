@@ -30,6 +30,21 @@ appV1.post("/auth/signin", (req, res) => {
     
 });
 
+appV1.post("/property", (req, res) => {
+    propertyStore.insert(req.body)
+        .then(result =>{
+            res.status(201).json({
+                status:"success",
+                data:result
+            })
+        })
+        .catch(err => res.status(412).json({
+            status:"error", error:err.message
+        }));
+});
+
+
+
 
 
 
