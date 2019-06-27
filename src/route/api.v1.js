@@ -98,4 +98,18 @@ appV1.get("/property", (req,res) =>{
         }));
 });
 
+appV1.get("/property/type", (req, res) =>{
+    propertyStore.findAll('type',req.query.type)
+        .then(results => {
+            results.forEach(result => delete result.owner);
+            res.status(200).json({
+                status:"success",
+                data:results
+            });
+        })
+        .catch(err => res.status(412).json({
+            status:"error", error:err.message
+        }));
+});
+
 export default appV1;
