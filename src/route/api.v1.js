@@ -57,6 +57,19 @@ appV1.patch("/property/:id", (req,res) =>{
         }));
 });
 
+appV1.patch(`/property/:id/:${"sold"}`, (req, res) =>{
+    propertyStore.update(req.params.id, {status:req.params.sold})
+        .then(result => {
+            delete result.owner;
+            res.status(201).json({
+                status:"success",
+                data:result
+            })
+        })
+        .catch(err => res.status(412).json({
+            status:"error", error:err.message
+        }));
+});
 
 
 
