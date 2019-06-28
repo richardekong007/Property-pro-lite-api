@@ -3,6 +3,7 @@ class StoreManager {
 
     constructor(store) {
         this.store = store;
+        this._configureIdIncrement();
     }
 
     static mount (store){
@@ -10,8 +11,17 @@ class StoreManager {
     }
 
     insert (entity){
+        
+        if (this._isIdDuplicated(entity)) {
+            return Promise.reject(new Error('Duplicate id'));
+        }
+        if (this._isEmailDuplicated(entity)) {
+            return Promise.reject(new Error('Email already exists'));
+        }
         return new Promise((res, rej) =>{
-            if (this.store.push(entity)){
+            let newId = this.store.push(entity);
+            if (newId){
+                entity.id = newId;
                 res(this.store[this.store.length-1])
             }else{
                 rej(new Error('Failed to create record'))
@@ -102,9 +112,9 @@ class StoreManager {
         let erased = this.store.length === 0;
         return new Promise((res, rej) =>{
             if (erased){
-                res("Operation successful");
+                res('Operation successful');
             }else{
-                rej("Operation unsuccessful");
+                rej('Operation unsuccessful');
             }
         });
 
@@ -116,6 +126,33 @@ class StoreManager {
         return new Promise((res) =>{
             if(unmounted) res('Operation successful');
         });
+    }
+
+    _isIdDuplicated (entity){
+        let duplicated;
+        if (entity){
+            const recordsWithDupId = this.store.filter(record => record.id === entity.id);
+            duplicated = recordsWithDupId.length > 0;
+        }
+        return duplicated;
+    }
+
+    _isEmailDuplicated (entity){
+        let duplicated;
+        if (entity){
+            const keys = Object.keys(entity);
+            if (keys.includes('email')){
+                const recordWithDupEmail = this.store.filter(record => record.email === entity.email);
+                duplicated = recordWithDupEmail.length > 0;
+            }
+            
+            return duplicated;
+        }
+    }
+    _configureIdIncrement (){
+        if (this.store.length > 0){
+            this.store.forEach((record, index) => record.id = index + 1);
+        }
     }
 }
 
