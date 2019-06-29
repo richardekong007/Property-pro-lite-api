@@ -40,6 +40,41 @@ class StoreManager {
         });
     }
 
+    _checkkeys (keys, record) {
+        let found = true;
+         keys.forEach(key =>{
+             found = found && Object.keys(record).includes(key);
+            });
+            return found;
+    }
+
+    _checkVals (vals, record){
+        let found = true;
+        vals.forEach(val => {
+            found = found && Object.values(record).includes(val);
+        });
+        return found;
+    }
+
+    findOne (data){
+        let searchedRecord;
+        if (data){
+            const dataVals = Object.values(data);
+            const dataKeys = Object.keys(data);
+            searchedRecord = this.store.find(record =>
+                this._checkkeys(dataKeys, record) 
+                && this._checkVals(dataVals, record));
+        }
+
+        return new Promise((res, rej) =>{
+            if (searchedRecord){
+                res(searchedRecord);
+            }else{
+                rej(new Error('No record'));
+            }
+        });
+    }
+
     findAll (){
         return new Promise((res, rej) =>{
             const records = this.store;
