@@ -1,8 +1,8 @@
 import Property from "../entity/property.js";
 
 const prop1 = new Property.Builder()
-    .setId('001')
-    .setOwner('002')
+    .setId("1")
+    .setOwner("2")
     .setStatus('Available')
     .setPrice('50000$')
     .setState('GA')
@@ -15,8 +15,8 @@ const prop1 = new Property.Builder()
 
 
 const prop2 =  new Property.Builder()
-    .setId('002')
-    .setOwner('001')
+    .setId("2")
+    .setOwner("1")
     .setStatus('Sold')
     .setPrice('501200$')
     .setState('NY')
@@ -29,8 +29,8 @@ const prop2 =  new Property.Builder()
 
 
 const prop3 =  new Property.Builder()
-    .setId('003')
-    .setOwner('003')
+    .setId("3")
+    .setOwner("3")
     .setStatus('Available')
     .setPrice('45000$')
     .setState('TEX')

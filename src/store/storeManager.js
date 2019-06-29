@@ -13,18 +13,18 @@ class StoreManager {
     insert (entity){
         
         if (this._isIdDuplicated(entity)) {
-            return Promise.reject(new Error('Duplicate id'));
+            return Promise.reject(new Error(`Duplicate id: ${entity.id}`));
         }
         if (this._isEmailDuplicated(entity)) {
-            return Promise.reject(new Error('Email already exists'));
+            return Promise.reject(new Error(`${entity.email} already exists`));
         }
+        let newId = this.store.push(entity);
+        entity.id = newId.toString();
         return new Promise((res, rej) =>{
-            let newId = this.store.push(entity);
             if (newId){
-                entity.id = newId;
-                res(this.store[this.store.length-1])
+                res(this.store[this.store.length-1]);
             }else{
-                rej(new Error('Failed to create record'))
+                rej(new Error('Failed to create record'));
             }
         });
     }
@@ -35,7 +35,7 @@ class StoreManager {
             if (record){
                 res(record)
             }else{
-                rej(new Error('No record'))
+                rej(new Error('No record'));
             }
         });
     }
@@ -72,7 +72,7 @@ class StoreManager {
         const recordToUpdate = this.store.find((record) => record.id === id);
         if (recordToUpdate){
             Object.keys(data).forEach((key) =>{
-                const recordKeys = Object.keys(recordToUpdate)
+                const recordKeys = Object.keys(recordToUpdate);
                     if (recordKeys.includes(key) && data[key]){
                         recordToUpdate[key] = data[key];
                         updated = true;
@@ -100,7 +100,7 @@ class StoreManager {
         
         return new Promise((res, rej) => {
             if (deleted){
-                res('operation successful')
+                res('operation successful');
             }else{
                 rej(new Error('Operation unsuccessful'));
             }
@@ -151,7 +151,7 @@ class StoreManager {
     }
     _configureIdIncrement (){
         if (this.store.length > 0){
-            this.store.forEach((record, index) => record.id = index + 1);
+            this.store.forEach((record, index) => record.id = (index + 1).toString());
         }
     }
 }
