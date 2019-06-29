@@ -1,7 +1,7 @@
 import Flag from "../entity/flag.js";
 
 const flag1 = new Flag.Builder()
-    .setId('001')
+    .setId("1")
     .setPropertyId('003')
     .setReason('Outrageous Pricing!')
     .setDescription('House Report')
@@ -9,16 +9,16 @@ const flag1 = new Flag.Builder()
     .build();
 
 const flag2 = new Flag.Builder()
-    .setId('002')
-    .setPropertyId('002')
+    .setId("2")
+    .setPropertyId("2")
     .setReason('Location does not exist')
     .setDescription('Fake advert')
     .setCreatedOn()
     .build();
 
 const flag3 = new Flag.Builder()
-    .setId('003')
-    .setPropertyId('003')
+    .setId("3")
+    .setPropertyId("3")
     .setReason('Poor facilities')
     .setDescription('Uncondusive house')
     .setCreatedOn()

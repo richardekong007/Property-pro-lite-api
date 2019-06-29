@@ -1,7 +1,7 @@
 import User from "../entity/user.js";
 
 const user1 = new User.Builder()
-    .setId('001')
+    .setId(1)
     .setFirstName('Kong')
     .setLastName('Badass')
     .setEmail('kong@mail.net')
@@ -12,7 +12,7 @@ const user1 = new User.Builder()
     .build();
 
 const user2 = new User.Builder()
-    .setId('002')
+    .setId(2)
     .setFirstName('Hong')
     .setLastName('Kelan')
     .setEmail('hong@mail.net')
@@ -23,7 +23,7 @@ const user2 = new User.Builder()
     .build();    
 
 const user3 = new User.Builder()
-    .setId('003')
+    .setId(3)
     .setFirstName('Bong')
     .setLastName('Sallim')
     .setEmail('bong@mail.net')
