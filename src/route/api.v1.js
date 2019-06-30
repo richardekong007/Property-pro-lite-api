@@ -52,7 +52,26 @@ appV1.post("/auth/signup", (req,res)=>{
 });
 
 appV1.post("/auth/signin", (req, res) => {
-    
+    const email = req.body.email;
+    const password = req.body.password;
+    userStore.findOne({email:email, password:password})
+        .then(result => {
+            res.status(200)
+                .json({
+                    status:"success",
+                    data:{
+                        token:"",
+                        id:result.id,
+                        first_name:result.first_name,
+                        last_name:result.last_name,
+                        email:result.email
+                    }
+                });
+        })
+        .catch(err => res.status(401).json({
+            status:"error",
+            error:err.message
+        }));
 });
 
 appV1.post("/property", (req, res) => {
