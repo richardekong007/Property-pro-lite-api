@@ -1,7 +1,6 @@
 import Router from "express";
 import StoreManager from "../store/storeManager.js";
 import User from "../entity/user.js";
-import users from "../store/users.js";
 import Property from "../entity/property.js";
 
 const appV1 = Router();
