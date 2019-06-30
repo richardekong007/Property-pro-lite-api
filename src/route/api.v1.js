@@ -87,7 +87,9 @@ appV1.post("/auth/signin", (req, res) => {
 
 appV1.post("/property", (req, res) => {
     const property = createProperty(req.body);
-    property.image_url = secure_url;
+    if (secure_url){
+        property.image_url = secure_url;
+    }
     propertyStore.insert(property)
         .then(result =>{
             delete result.owner;
