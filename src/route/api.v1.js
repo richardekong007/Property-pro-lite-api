@@ -1,11 +1,22 @@
 import Router from "express";
+import cloudinary from "cloudinary";
+import dotenv from "dotenv";
 import StoreManager from "../store/storeManager.js";
 import User from "../entity/user.js";
 import Property from "../entity/property.js";
 
+
+dotenv.config();
 const appV1 = Router();
 const userStore = StoreManager.mount([]);
 const propertyStore = StoreManager.mount([]);
+let secure_url;
+
+cloudinary.config({
+    cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
+    api_key:process.env.CLOUDINARY_API_KEY,
+    api_secret:process.env.CLOUDINARY_API_SECRET
+});
 
 
 const createProperty = (requestBody) =>{
@@ -16,7 +27,6 @@ const createProperty = (requestBody) =>{
             property[key] = requestBody[key];
         }
     });
-    
     return property;
 };
 
@@ -30,7 +40,7 @@ const createUser = (requestBody) =>{
     return user;
 };
 
-appV1.post("/auth/signup", (req,res)=>{
+appV1.post("/auth/signup", (req,res) =>{
     const user = createUser(req.body);
     userStore.insert(user)
         .then(result => {
@@ -48,6 +58,8 @@ appV1.post("/auth/signup", (req,res)=>{
         .catch(err => res.status(412).json({
             status:"error", error:err.message
         }));
+        console.log(user);
+        
 });
 
 appV1.post("/auth/signin", (req, res) => {
@@ -75,6 +87,7 @@ appV1.post("/auth/signin", (req, res) => {
 
 appV1.post("/property", (req, res) => {
     const property = createProperty(req.body);
+    property.image_url = secure_url;
     propertyStore.insert(property)
         .then(result =>{
             delete result.owner;
@@ -163,6 +176,14 @@ appV1.get("/property/:id", (req, res) =>{
         .catch(err=> res.status(412).json({
             status:"error", error:err.message
         }));
+});
+
+appV1.post("/upload", (req, res, next) => {
+    const file = req.files.photo;
+    cloudinary.v2.uploader.upload(file.tempFilePath, (err, result) => {
+        if (result) secure_url = result.secure_url;
+        console.log(secure_url);
+    });
 });
 
 export default appV1;
