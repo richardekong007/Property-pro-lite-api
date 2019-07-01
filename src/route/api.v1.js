@@ -58,7 +58,6 @@ appV1.post("/auth/signup", (req,res) =>{
         .catch(err => res.status(412).json({
             status:"error", error:err.message
         }));
-        console.log(user);
         
 });
 
