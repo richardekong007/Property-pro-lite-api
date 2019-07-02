@@ -8,7 +8,8 @@
     "test": "nyc mocha --require @babel/register test/*.js --exit",
     "build": "babel src --out-dir dist",
     "server": "node dist/index.js",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "api-blueprint": "aglio -i apibdoc/docs.md -o public/docs.html"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,7 @@
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
     "@babel/register": "^7.4.4",
+    "aglio": "^2.3.0",
     "body-parser": "^1.19.0",
     "cloudinary": "^1.14.0",
     "connect-multiparty": "^2.2.0",
@@ -40,6 +42,7 @@
     "express": "^4.17.1",
     "express-fileupload": "^1.1.5",
     "express-validator": "^6.1.0",
+    "g": "^2.0.1",
     "multer": "^1.4.1",
     "nodemon": "^1.19.1",
     "nyc": "^14.1.1",
