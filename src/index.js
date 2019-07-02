@@ -9,6 +9,7 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use("/api/v1", appV1);
 app.use("/",appV1);
+app.use(express.static("public"));
 
 
 if (process.env.NODE_ENV !== 'test'){
