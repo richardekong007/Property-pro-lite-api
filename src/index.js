@@ -8,9 +8,9 @@ app.set('port', 3999);
 app.set('space', 4);
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
-app.use(fileUpload({
-    useTempFiles:true
-}));
+// app.use(fileUpload({
+//     useTempFiles:true
+// }));
 app.use("/api/v1", appV1);
 app.use("/",appV1);
 

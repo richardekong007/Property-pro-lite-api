@@ -13,6 +13,7 @@ const propertyDataKeys = ["id","status","price","state","address","type","create
 chai.use(chaiHttp);
 chai.use(chaiAsPromised);
 
+
 const createProperty = () =>{
     const property = new Property.Builder()
                         .setOwner("2")
@@ -39,7 +40,7 @@ describe("api.v1 routes: Property", () =>{
 
     describe("POST/property", () =>{
         it("Should create a new property", () =>{
-            return chai.request(app)
+                return chai.request(app)
                 .post("/property")
                 .send({
                     owner: "1",
@@ -49,7 +50,7 @@ describe("api.v1 routes: Property", () =>{
                     city: "Pkico",
                     address: "No.12 Ali road",
                     type: "Duplex",
-                    image_url: "xxxx-xxxx-xxxx"
+                    image_url: "xxxxxxxxx"
                 })
                 .then(res =>{
                     expect(res).to.not.be.undefined;
@@ -61,7 +62,7 @@ describe("api.v1 routes: Property", () =>{
                     Object.values(res.body.data)
                         .forEach(value => expect(value).to.not.be.undefined);
                 })
-                .catch(err => expect(err).to.be.rejected);
+                .catch(err => expect(err).to.be.rejected);    
         });
     });
 
