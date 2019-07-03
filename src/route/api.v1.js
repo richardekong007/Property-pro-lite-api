@@ -7,6 +7,7 @@ import User from "../entity/user.js";
 import Property from "../entity/property.js"; 
 import {validationResult} from "express-validator"
 import signupValidator from "../../middleware/validators/signupValidator.js";
+import signinValidator from "../../middleware/validators/signinValidator.js";
 
 
 
@@ -107,7 +108,14 @@ appV1.post("/auth/signup", signupValidator, (req,res) =>{
         
 });
 
-appV1.post("/auth/signin", (req, res) => {
+appV1.post("/auth/signin", signinValidator , (req, res) => {
+    const validationError = validationResult(req);
+    if (!validationError.isEmpty()){
+        return res.status(422).json({
+            status:"error", 
+            error: validationError.array()
+        });
+    }
     const email = req.body.email;
     const password = req.body.password;
     userStore.findOne({email:email, password:password})
