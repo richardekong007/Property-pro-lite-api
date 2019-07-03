@@ -8,6 +8,7 @@ import Property from "../entity/property.js";
 import {validationResult} from "express-validator"
 import signupValidator from "../../middleware/validators/signupValidator.js";
 import signinValidator from "../../middleware/validators/signinValidator.js";
+import postPropertyValidator from "../../middleware/validators/postPropertyValidator.js";
 
 
 
@@ -138,7 +139,14 @@ appV1.post("/auth/signin", signinValidator , (req, res) => {
         }));
 });
 
-appV1.post("/property", upload.single('image_url'), (req, res) => {
+appV1.post("/property", upload.single('image_url'), postPropertyValidator, (req, res) => {
+    const validatorError = validationResult(req);
+    if (!validatorError.isEmpty()){
+        return res.status(422).json({
+            status: "error",
+            error: validatorError.array()
+        });
+    }
     const property = createProperty(req.body);
     if (req.file){
         cloudinary.v2.uploader.upload(req.file.path, (err, feedback) => {
