@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 import StoreManager from "../store/storeManager.js";
 import User from "../entity/user.js";
 import Property from "../entity/property.js"; 
+import {validationResult} from "express-validator"
+import signupValidator from "../../middleware/validators/signupValidator.js";
 
 
 
@@ -54,6 +56,7 @@ const createProperty = (requestBody) =>{
 };
 
 const createUser = (requestBody) =>{
+    
     const user = new User.Builder().build();
     Object.keys(user).forEach(key=>{
         if (Object.keys(requestBody).includes(key)){
@@ -76,7 +79,14 @@ const insertProperty = (db, property, response) =>{
             }));
 };
 
-appV1.post("/auth/signup", (req,res) =>{
+appV1.post("/auth/signup", signupValidator, (req,res) =>{
+    const validationError = validationResult(req);
+    if (!validationError.isEmpty()){
+        return res.status(422).json({
+            status:"Error",
+            error:validationError.array()
+        });
+    }
     const user = createUser(req.body);
     userStore.insert(user)
         .then(result => {
