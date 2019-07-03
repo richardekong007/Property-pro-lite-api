@@ -9,6 +9,7 @@ import {validationResult} from "express-validator"
 import signupValidator from "../../middleware/validators/signupValidator.js";
 import signinValidator from "../../middleware/validators/signinValidator.js";
 import postPropertyValidator from "../../middleware/validators/postPropertyValidator.js";
+import patchPropertyValidator from "../../middleware/validators/patchPropertyValidator.js";
 
 
 
@@ -159,6 +160,13 @@ appV1.post("/property", upload.single('image_url'), postPropertyValidator, (req,
 });
 
 appV1.patch("/property/:id",(req, res) =>{
+    const patchValidation = patchPropertyValidator(req.body);
+    if (!patchValidation.valid){
+        return res.status(422).json({
+            status: "error",
+            error: patchValidation.error
+        });
+    }
     propertyStore.update(req.params.id, req.body)
         .then((result)=>{
             res.status(200).json({status:"success", data:result})
