@@ -11,7 +11,7 @@ const createUser = () =>{
         .setEmail('kong@mail.net')
         .setAddress('No.5 Makspeson Avenue')
         .setPhoneNumber('0803737646')
-        .setPassword('@#%^@$*')
+        .setPassword('Kongass10')
         .setIsAdmin(true)
         .build();
         
@@ -40,7 +40,7 @@ describe("api.v1 Route: user", () =>{
                     email:"bong2@mail.net",
                     address:"No.2 RedVille circle",
                     phoneNumber:"0803737435",
-                    password:"!@&*#@",
+                    password:"Bongzooki7",
                     is_admin:"false"
                 })
                 .then((res) =>{
