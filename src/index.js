@@ -3,7 +3,7 @@ import router from "./route/api.v1.js";
 
 const app = express();
 
-app.set('port', 3999);
+app.set('port', process.env.PORT || 3999);
 app.set('space', 4);
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
