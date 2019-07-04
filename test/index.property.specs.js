@@ -4,7 +4,7 @@ import chai from "chai";
 import chaiHttp from "chai-http";
 import chaiAsPromised from "chai-as-promised";
 import Property from "../src/entity/property.js";
-import {propertyStore} from "../src/route/api.v1.js";
+import propertyStore from "../src/route/controllers/property.controller.js";
 
 
 const expect = chai.expect;
