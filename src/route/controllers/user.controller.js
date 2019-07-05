@@ -1,15 +1,15 @@
 import User from "../../entity/user.js";
 import StoreManager from "../../store/storeManager";
-import {validationResult} from "express-validator";
+import {validationResult} from "express-validator"; 
 
-const userStore = StoreManager.mount([]);
+const userStore = StoreManager.mount(__dirname+'/users.json');
 
 const createUser = (requestBody) =>{
 
     const user = new User.Builder().build();
     Object.keys(user).forEach(key=>{
         if (Object.keys(requestBody).includes(key)){
-            user[key] = requestBody[key];
+       user[key] = requestBody[key];
         }
     });
     return user;

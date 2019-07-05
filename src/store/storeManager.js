@@ -1,13 +1,14 @@
 
+import fs from 'fs'; 
+
 class StoreManager {
 
-    constructor(store) {
-        this.store = store;
-        this._configureIdIncrement();
+    constructor(file) {
+        this.file = file;
     }
 
-    static mount (store){
-        return new StoreManager(store);
+    static mount(file){
+        return new StoreManager(file);
     }
 
     insert (entity){
@@ -18,11 +19,14 @@ class StoreManager {
         if (this._isEmailDuplicated(entity)) {
             return Promise.reject(new Error(`${entity.email} already exists`));
         }
-        let newId = this.store.push(entity);
+        let records = this._readFromJSONFile();
+        let newId = records.push(entity);
         entity.id = newId.toString();
+        
         return new Promise((res, rej) =>{
             if (newId){
-                res(this.store[this.store.length-1]);
+                this._writeToJSONFile(records);
+                res(records[records.length-1]);
             }else{
                 rej(new Error('Failed to create record'));
             }
@@ -30,8 +34,9 @@ class StoreManager {
     }
 
     findById (id){
+        let records = this._readFromJSONFile();
         return new Promise((res, rej) =>{
-            const record = this.store.find(({id:theId}) => theId === id);
+            const record = records.find(({id:theId}) => theId === id);
             if (record){
                 res(record)
             }else{
@@ -61,7 +66,7 @@ class StoreManager {
         if (data){
             const dataVals = Object.values(data);
             const dataKeys = Object.keys(data);
-            searchedRecord = this.store.find(record =>
+            searchedRecord = this._readFromJSONFile().find(record =>
                 this._checkkeys(dataKeys, record) 
                 && this._checkVals(dataVals, record));
         }
@@ -77,7 +82,7 @@ class StoreManager {
 
     findAll (){
         return new Promise((res, rej) =>{
-            const records = this.store;
+            const records = this._readFromJSONFile();
             if (records){
                 res(records);
             }else{
@@ -89,7 +94,7 @@ class StoreManager {
 
     // eslint-disable-next-line no-dupe-class-members
     findAll (key, val){
-        const records = this.store.filter(record => record[key] === val);
+        const records = this._readFromJSONFile().filter(record => record[key] === val);
         let found = records.length > 0;
         return new Promise((res, rej) =>{
             if (found){
@@ -104,12 +109,14 @@ class StoreManager {
     update(id, data){
     
         let updated = false;
-        const recordToUpdate = this.store.find((record) => record.id === id);
+        const records = this._readFromJSONFile();
+        const recordToUpdate = records.find((record) => record.id === id);
         if (recordToUpdate){
             Object.keys(data).forEach((key) =>{
                 const recordKeys = Object.keys(recordToUpdate);
                     if (recordKeys.includes(key) && data[key]){
                         recordToUpdate[key] = data[key];
+                        fs.writeFileSync(this.file,JSON.stringify(records, null, 1, 2));
                         updated = true;
                     }
             });
@@ -125,10 +132,12 @@ class StoreManager {
 
     delete (id){
         let deleted;
-        const size = this.store.length;
-        this.store.filter((record,index,store) => {
+        const records = this._readFromJSONFile();
+        const size = records.length;
+        records.filter((record,index,store) => {
           if (record.id === id){
               store.splice(index,1);
+              fs.writeFileSync(this.file, JSON.stringify(records, null,1, 2))
           }
           deleted = size > store.length;
         });
@@ -141,32 +150,32 @@ class StoreManager {
             }
         });
     }	
-    
+
     erase (){
-        this.store.splice(0, this.store.length);
-        let erased = this.store.length === 0;
+        let records = this._readFromJSONFile();
+        this.erasedRecords = [...records];
+        records.splice(0, records.length);
         return new Promise((res, rej) =>{
-            if (erased){
+            if (records.length < 1){
+                this._writeToJSONFile(records);
                 res('Operation successful');
             }else{
-                rej('Operation unsuccessful');
+                rej(new Error('Operation unsuccessful'))
             }
         });
-
     }
 
-    unmount (){
-        this.store = [];
-        const unmounted = this.store.length === 0;
-        return new Promise((res) =>{
-            if(unmounted) res('Operation successful');
-        });
+    restore (){
+        //can only work during runtime, after runtime all erased records will be gone
+        if (this.erasedRecords && this.erasedRecords.length > 0){
+            this._writeToJSONFile(this.erasedRecords);
+        }
     }
 
     _isIdDuplicated (entity){
         let duplicated;
-        if (entity){
-            const recordsWithDupId = this.store.filter(record => record.id === entity.id);
+        if (entity && !(this._isJSONFileEmpty())){
+            const recordsWithDupId = this._readFromJSONFile().filter(record => record.id === entity.id);
             duplicated = recordsWithDupId.length > 0;
         }
         return duplicated;
@@ -174,10 +183,11 @@ class StoreManager {
 
     _isEmailDuplicated (entity){
         let duplicated;
-        if (entity){
+        if (entity && !(this._isJSONFileEmpty())){
             const keys = Object.keys(entity);
             if (keys.includes('email')){
-                const recordWithDupEmail = this.store.filter(record => record.email === entity.email);
+                const recordWithDupEmail = this._readFromJSONFile()
+                    .filter(record => record.email === entity.email);
                 duplicated = recordWithDupEmail.length > 0;
             }
             
@@ -185,9 +195,32 @@ class StoreManager {
         }
     }
     _configureIdIncrement (){
-        if (this.store.length > 0){
-            this.store.forEach((record, index) => record.id = (index + 1).toString());
+        let records = this._readFromJSONFile();
+        if (records.length > 0){
+            records.forEach((record, index) => record.id = (index + 1).toString());
         }
+    }
+
+    _readFromJSONFile (){
+        return JSON.parse(fs.readFileSync(this.file));
+    }
+
+    _writeToJSONFile (data){
+        // let oldRecords;
+        // if (!this._isJSONFileEmpty()){
+        //     oldRecords = this._readFromJSONFile();
+        //     oldRecords.push(this.buffer[this.buffer.length - 1]);
+        // } else{
+        //     oldRecords = this.buffer[this.buffer.length - 1];
+        // }
+        fs.writeFileSync(this.file, JSON.stringify(data, null, 1, 2));
+    }
+
+    _isJSONFileEmpty (){
+        //for the purpose of this challenge
+        let data = this._readFromJSONFile();
+        return typeof data instanceof Array 
+            && data.length < 1;
     }
 }
 

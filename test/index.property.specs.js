@@ -1,5 +1,5 @@
 import app from '../src/index.js';
-import {beforeEach, describe, it} from "mocha";
+import {beforeEach, afterEach, describe, it} from "mocha";
 import chai from "chai";
 import chaiHttp from "chai-http";
 import chaiAsPromised from "chai-as-promised";
@@ -36,6 +36,11 @@ describe("api.v1 routes: Property", () =>{
     beforeEach(() =>{
         return propertyStore.erase()
             .then(()=> propertyStore.insert(property));
+    });
+
+    afterEach(done =>{
+        propertyStore.restore();
+        done();
     });
 
     describe("POST/property", () =>{

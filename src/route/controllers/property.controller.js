@@ -14,7 +14,7 @@ cloudinary.config({
     api_secret:process.env.CLOUDINARY_API_SECRET
 });
 
-const propertyStore = StoreManager.mount([]);
+const propertyStore = StoreManager.mount(__dirname+'/properties.json');
 
 const createProperty = (requestBody) =>{
     const property = new Property.Builder()
