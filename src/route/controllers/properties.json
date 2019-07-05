@@ -1,0 +1,35 @@
+[
+ {
+  "id": "1",
+  "status": "available",
+  "price": "25600",
+  "state": "Niger",
+  "city": "Pkiko",
+  "address": "Garki, Area 11",
+  "type": "Bungalow",
+  "created_on": "2019-07-05T16:51:19.751Z",
+  "image_url": "https://res.cloudinary.com/dxownn0lv/image/upload/v1562345481/qoajydpd12ixixdjy3t3.png"
+ },
+ {
+  "id": "2",
+  "status": "available",
+  "price": "50000",
+  "state": "Plateau",
+  "city": "Jos",
+  "address": "GRA",
+  "type": "Bungalow",
+  "created_on": "2019-07-05T16:52:34.905Z",
+  "image_url": "https://res.cloudinary.com/dxownn0lv/image/upload/v1562345557/k7dsygcyrlayjiveppfy.png"
+ },
+ {
+  "id": "3",
+  "status": "available",
+  "price": "42000",
+  "state": "Lagos",
+  "city": "Okota",
+  "address": "No.5 Green field estate",
+  "type": "Duplex",
+  "created_on": "2019-07-05T16:53:44.169Z",
+  "image_url": "https://res.cloudinary.com/dxownn0lv/image/upload/v1562345626/gwwigg5nopfvpdiavr5a.png"
+ }
+]

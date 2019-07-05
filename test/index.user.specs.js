@@ -1,8 +1,11 @@
 import app from "../src/index.js";
-import {describe, beforeEach, it} from "mocha";
+import {describe, beforeEach, it, afterEach} from "mocha";
 import chai from "chai";
 import User from "../src/entity/user.js";
 import userStore from "../src/route/controllers/user.controller.js";
+
+
+
 
 const createUser = () =>{
     const user = new User.Builder()
@@ -28,6 +31,11 @@ describe("api.v1 Route: user", () =>{
     beforeEach(() => {
         return userStore.erase()
             .then(()=> userStore.insert(user));
+    });
+
+    afterEach(done =>{
+        userStore.restore();
+        done();
     });
 
     describe("POST/auth/signup", () =>{

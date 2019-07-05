@@ -1,0 +1,38 @@
+[
+ {
+  "id": "1",
+  "email": "Roll@mail.net",
+  "first_name": "Rolland",
+  "last_name": "Rolince",
+  "password": "veeKroo2",
+  "phoneNumber": "87247442",
+  "is_admin": "false"
+ },
+ {
+  "id": "2",
+  "email": "dave@mail.net",
+  "first_name": "David",
+  "last_name": "prince",
+  "password": "primceD002",
+  "phoneNumber": "03554567",
+  "is_admin": "true"
+ },
+ {
+  "id": "3",
+  "email": "black@mail.net",
+  "first_name": "Black",
+  "last_name": "Omago",
+  "password": "Oblack003",
+  "phoneNumber": "03554567",
+  "is_admin": "true"
+ },
+ {
+  "id": "4",
+  "email": "bill@mail.net",
+  "first_name": "Terry",
+  "last_name": "Bill",
+  "password": "Billtey6",
+  "phoneNumber": "756445454",
+  "is_admin": "true"
+ }
+]
