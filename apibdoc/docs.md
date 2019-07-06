@@ -1,5 +1,5 @@
 FORMAT: 1A
-HOST:http://127.0.0.1:3999/api/v1
+HOST:https://property-pro-lite-api.herokuapp.com/api/v1
 # Welcome to Property Pro Lite API documentation page.
 
 This page presents all routes and resource available in this Application Programming Interface.
