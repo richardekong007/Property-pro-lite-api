@@ -2,6 +2,7 @@ import User from "../../entity/user.js";
 import StoreManager from "../../store/storeManager";
 import Db from "../../db/db.js";
 import {validationResult} from "express-validator"; 
+import Db from "../../db/db.js";
 
 const userStore = StoreManager.mount(__dirname+'/users.json');
 const db = Db.getInstance();
@@ -56,27 +57,28 @@ const signinUser = (req, res) =>{
         });
     }
   
-    userStore.findOne({
-        email:req.body.email,
-        password:req.body.password
-    })
-    .then(result => {
-        res.status(200)
-            .json({
-                status:"success",
-                data:{
-                    token:"",
-                    id:result.id,
-                    first_name:result.first_name,
-                    last_name:result.last_name,
-                    email:result.email
-                }
-            });
-    })
-    .catch(err => res.status(401).json({
-            status:"error",
-            error:err.message
-    }));
+    const sqlStatement = "SELECT * FROM USER WHERE email = $1 AND password = $2 RETURNING *";
+    const values = Object.values(req.body);
+    
+    db.query(sqlStatement, values)
+      .then(result => {
+            const record = result.rows[0];
+            res.status(200)
+                .json({
+                    status:"success",
+                    data:{
+                        token:"",
+                        id:record.id,
+                        first_name:record.first_name,
+                        last_name:record.last_name,
+                        email:record.email
+                    }
+                });
+        })
+        .catch(err => res.status(401).json({
+                status:"error",
+                error:err.message
+        }));
 };
 
 export default userStore;
