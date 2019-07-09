@@ -2,6 +2,7 @@ import app from "../src/index.js";
 import {describe, before, it, after} from "mocha";
 import chai from "chai";
 import User from "../src/entity/user.js";
+import userStore from "../src/route/controllers/user.controller.js";
 import Db from "../src/db/db.js";
 
 
