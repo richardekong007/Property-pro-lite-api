@@ -1,8 +1,10 @@
 import User from "../../entity/user.js";
 import StoreManager from "../../store/storeManager";
+import Db from "../../db/db.js";
 import {validationResult} from "express-validator"; 
 
 const userStore = StoreManager.mount(__dirname+'/users.json');
+const db = Db.getInstance();
 
 const createUser = (requestBody) =>{
 
@@ -23,15 +25,20 @@ const signupUser = (req, res) =>{
             error:validationError.array()
         });
     }
-    userStore.insert(createUser(req.body))
+    const sqlStatement = "INSERT INTO USERS(email, first_name, last_name, password, phoneNumber, address, is_admin) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *";
+    const {email, first_name, last_name, password, phoneNumber, address, is_admin} = createUser(req.body);
+    const values = [email, first_name, last_name, password, phoneNumber, address, is_admin];
+
+    db.query(sqlStatement, values)
         .then(result => {
+            const record = result.rows[0];
             res.status(201).json({
                 status: "success",
                 data:{
-                    token:"", id: result.id,
-                    first_name:result.first_name, 
-                    last_name:result.last_name,
-                    email:result.email
+                    token:"", id: record.id,
+                    first_name:record.first_name, 
+                    last_name:record.last_name,
+                    email:record.email
                 }
             });
         })

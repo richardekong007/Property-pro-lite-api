@@ -5,8 +5,6 @@ import User from "../src/entity/user.js";
 import userStore from "../src/route/controllers/user.controller.js";
 
 
-
-
 const createUser = () =>{
     const user = new User.Builder()
         .setFirstName('Kong')
