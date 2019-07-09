@@ -1,10 +1,12 @@
 import app from "../src/index.js";
-import {describe, beforeEach, it, afterEach} from "mocha";
+import {describe, before, it, after} from "mocha";
 import chai from "chai";
 import User from "../src/entity/user.js";
 import userStore from "../src/route/controllers/user.controller.js";
+import Db from "../src/db/db.js";
 
 
+const db = Db.getInstance();
 const createUser = () =>{
     const user = new User.Builder()
         .setFirstName('Kong')
@@ -26,13 +28,19 @@ const userResDataKeys = ["token","id","first_name","last_name","email"];
 describe("api.v1 Route: user", () =>{
     const user = createUser();
 
-    beforeEach(() => {
-        return userStore.erase()
-            .then(()=> userStore.insert(user));
+    const sqlStatement = "INSERT INTO USERSTEST(email, first_name, last_name,password, phoneNumber, address, is_admin) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *";
+
+    const {email,first_name,last_name,password,phoneNumber,address, is_admin} = user;
+    const values = [email,first_name,last_name,password,phoneNumber,address, is_admin];
+
+    before(() => {
+       return db.query(sqlStatement, values)
+                .then(result => console.log(result.rows[0]))
+                .catch((err) => console.error(err));
     });
 
-    afterEach(done =>{
-        userStore.restore();
+    after(done =>{
+        db.dropTable('USERSTEST');
         done();
     });
 
