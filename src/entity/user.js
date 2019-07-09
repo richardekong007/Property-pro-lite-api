@@ -6,6 +6,7 @@ class User {
         this.first_name = build.first_name;
         this.last_name = build.last_name;
         this.password = build.password;
+        this.address = build.address;
         this.phoneNumber = build.phoneNumber;
         this.is_admin = build.is_admin;
     }
