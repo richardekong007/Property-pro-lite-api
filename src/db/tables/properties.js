@@ -39,7 +39,7 @@ const devTemplate = `
     ALTER TABLE IF EXISTS PROPERTY OWNER TO ${tableUser};
 `;
 
-const propertyTemplate = (tableUser === 'test') ? testTemplate : devTemplate;
+const propertyTemplate = (tableUser === process.env.DB_USER_TEST) ? testTemplate : devTemplate;
 
 console.log(propertyTemplate);
 export default propertyTemplate;
