@@ -1,10 +1,7 @@
 import User from "../../entity/user.js";
-import StoreManager from "../../store/storeManager";
 import Db from "../../db/db.js";
 import {validationResult} from "express-validator"; 
-import Db from "../../db/db.js";
 
-const userStore = StoreManager.mount(__dirname+'/users.json');
 const db = Db.getInstance();
 
 const createUser = (requestBody) =>{
@@ -12,7 +9,7 @@ const createUser = (requestBody) =>{
     const user = new User.Builder().build();
     Object.keys(user).forEach(key=>{
         if (Object.keys(requestBody).includes(key)){
-       user[key] = requestBody[key];
+            user[key] = requestBody[key];
         }
     });
     return user;
@@ -57,7 +54,7 @@ const signinUser = (req, res) =>{
         });
     }
   
-    const sqlStatement = "SELECT * FROM USER WHERE email = $1 AND password = $2 RETURNING *";
+    const sqlStatement = "SELECT * FROM USERS WHERE email = $1 AND password = $2";
     const values = Object.values(req.body);
     
     db.query(sqlStatement, values)
@@ -81,5 +78,5 @@ const signinUser = (req, res) =>{
         }));
 };
 
-export default userStore;
+
 export {signupUser, signinUser};
