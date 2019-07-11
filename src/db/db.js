@@ -53,11 +53,19 @@ class Db {
         this.createTable(propertyTemplate);
     }
 
+    dropTable (table){
+        const stmt = `DROP TABLE IF EXISTS ${table} CASCADE;`;
+        return this._dbPool.query(stmt);
+            
+    }
+
     clearTable (table){
-        const stmt = `DELETE FROM ${table};`;
-        this._dbPool.query(stmt)
-            .then(result => console.log(result))
-            .catch(err => console.error(err));
+        const stmt = `DELETE FROM ${table} CASCADE;`;
+        return this._dbPool.query(stmt);
+    }
+
+    getConnectionPool (){
+        return this._dbPool;
     }
 
     query (queryText, values){

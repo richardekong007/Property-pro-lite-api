@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import Property from "../../entity/property.js";
-import StoreManager from "../../store/storeManager.js";
 import cloudinary from "cloudinary";
+import Db from "../../db/db.js";
 import {validationResult} from "express-validator";
 import patchPropertyValidator from "../../../middleware/validators/patchPropertyValidator.js";
 
@@ -14,7 +14,7 @@ cloudinary.config({
     api_secret:process.env.CLOUDINARY_API_SECRET
 });
 
-const propertyStore = StoreManager.mount(__dirname+'/properties.json');
+const db = Db.getInstance();
 
 const createProperty = (requestBody) =>{
     const property = new Property.Builder()
@@ -27,13 +27,19 @@ const createProperty = (requestBody) =>{
     return property;
 };
 
-const insertProperty = (db, property, response) =>{
-    db.insert(property)
+const insertProperty = (database, property, response) =>{
+    const sqlStatement = "INSERT INTO PROPERTY(owner,status,price,state,city,address,type,created_on,image_url) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *;"
+    const {owner,status,price,state,city,address,type,created_on,image_url} = property;
+    const values = [owner,status,price,state,city,address,type,created_on,image_url];
+
+    database.query(sqlStatement, values)
             .then(result =>{
-                delete result.owner;
+                const {id,status,type,state,city,address,price,created_on,image_url} = result.rows[0];
+                const data = {id,status,type,state,city,address,price,created_on,image_url};
                 response.status(201).json({
                     status:"success",
-                    data:result});
+                    data:data
+                });
             })
             .catch(err => response.status(412).json({
                 status:"error", error:err.message
@@ -52,11 +58,23 @@ const postPropertyAdvert = (req, res) =>{
     if (req.file){
         cloudinary.v2.uploader.upload(req.file.path, (err, feedback) => {
             property.image_url = feedback.secure_url;
-            insertProperty(propertyStore, property,res);
+            insertProperty(db, property,res);
         });
     }else{
-        insertProperty(propertyStore,property,res);
+        insertProperty(db,property,res);
     }
+};
+
+const prepareUpdateStatement = (table,reqestBody) =>{
+
+    let statement = [`UPDATE ${table} SET`];
+    const keys = Object.keys(reqestBody);
+    keys.forEach((key,index) =>{
+        statement.push((index < keys.length - 1) ? ",":` ${key} = $${index+1}`);
+    });
+    statement.push(` WHERE id = $${keys.length+1} RETURNING id, status, type, 
+    state, city, address, price, created_on, image_url;`);
+    return statement.join("");
 };
 
 const updateProperty = (req, res) =>{
@@ -67,20 +85,25 @@ const updateProperty = (req, res) =>{
             error: patchValidation.error
         });
     }
-    propertyStore.update(req.params.id, req.body)
+    const table = "PROPERTY";
+    const sqlStatement = prepareUpdateStatement(table,req.body);
+    const values = [...Object.values(req.body), parseInt(req.params.id)];
+    db.query(sqlStatement, values)
         .then((result)=>{
-            res.status(200).json({status:"success", data:result})
+            res.status(200).json({status:"success", data:result.rows[0]})
         })
         .catch((err)=> res.status(400).json({status:"error", error:err.message}));
 };
 
 const markAsSold = (req, res) =>{
-    propertyStore.update(req.params.id, {status:req.params.sold})
+
+    const sqlStatement = "UPDATE PROPERTY SET status = $1 WHERE id = $2 RETURNING id, status, type, state, city, address, price, created_on, image_url;"
+    const values = [req.params.sold, parseInt(req.params.id)];
+    db.query(sqlStatement, values)
         .then(result => {
-            delete result.owner;
             res.status(200).json({
                 status:"success",
-                data:result
+                data:result.rows[0]
             });
         })
         .catch(err => res.status(400).json({
@@ -89,11 +112,15 @@ const markAsSold = (req, res) =>{
 };
 
 const deleteProperty = (req, res) =>{
-    propertyStore.delete(req.params.id)
+    const sqlStatement = "DELETE FROM PROPERTY WHERE id = $1 RETURNING *;";
+    const values = [parseInt(req.params.id)];
+
+    db.query(sqlStatement, values)
         .then(result =>{
+            if (!result || result.rowCount < 1) throw new Error("No record deleted");
             res.status(200).json({
                 status:"success",
-                data:{message: result}
+                data:{message: "Operation successful"}
             });
         })
         .catch(err => res.status(404).json({
@@ -102,12 +129,13 @@ const deleteProperty = (req, res) =>{
 }
 
 const findAllProperties = (req, res) =>{
-    propertyStore.findAll()
+    const sqlStatement = "SELECT id, status, type, state, city, address, price, created_on, image_url FROM PROPERTY ORDER BY id ASC;";
+    db.query(sqlStatement)
         .then(results => {
-                results.forEach(result => delete result.owner);
+                if(!results || results.rowCount < 1) throw new Error("No record found");
                 res.status(200).json({
                     status:200,
-                    data:results
+                    data:results.rows
             });
         })
         .catch(err => res.status(404).json({
@@ -116,12 +144,14 @@ const findAllProperties = (req, res) =>{
 };
 
 const findPropertyByType = (req, res) =>{
-    propertyStore.findAll('type',req.query.type)
+    const sqlStatement = "SELECT id, status, type, state, city, address, price, created_on, image_url FROM PROPERTY WHERE type = $1 ORDER BY id ASC;";
+    const values = [req.query.type];
+    db.query(sqlStatement,values)
         .then(results => {
-            results.forEach(result => delete result.owner);
+            if (!results || results.rowCount < 1) throw new Error("No Records!");
             res.status(200).json({
                 status:200,
-                data:results
+                data:results.rows
             });
         })
         .catch(err => res.status(404).json({
@@ -130,20 +160,20 @@ const findPropertyByType = (req, res) =>{
 };
 
 const findPropertyById = (req, res) => {
-    propertyStore.findById(req.params.id)
-        .then(result => {
-            delete result.owner;
+    const sqlStatement = "SELECT id, status, type, state, city, address, price, created_on, image_url FROM PROPERTY WHERE id = $1;";
+    const values = [parseInt(req.params.id)];
+    db.query(sqlStatement, values)
+        .then(results => {
+            if (results.rowCount < 1) throw new Error("No record found");
             res.status(200).json({
                 status:200,
-                data:result
+                data:results.rows[0]
             });
         })
         .catch(err=> res.status(404).json({
             status:"error", error:err.message
         }));
 };
-
-export default propertyStore;
 
 export {
     postPropertyAdvert, updateProperty, markAsSold, 
