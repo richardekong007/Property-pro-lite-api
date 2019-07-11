@@ -2,7 +2,6 @@ import app from "../src/index.js";
 import {describe, before, it, after} from "mocha";
 import chai from "chai";
 import User from "../src/entity/user.js";
-import userStore from "../src/route/controllers/user.controller.js";
 import Db from "../src/db/db.js";
 
 
@@ -28,7 +27,7 @@ const userResDataKeys = ["token","id","first_name","last_name","email"];
 describe("api.v1 Route: user", () =>{
     const user = createUser();
 
-    const sqlStatement = "INSERT INTO USERSTEST(email, first_name, last_name,password, phoneNumber, address, is_admin) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *";
+    const sqlStatement = "INSERT INTO USERS(email, first_name, last_name,password, phoneNumber, address, is_admin) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *";
 
     const {email,first_name,last_name,password,phoneNumber,address, is_admin} = user;
     const values = [email,first_name,last_name,password,phoneNumber,address, is_admin];
@@ -40,7 +39,7 @@ describe("api.v1 Route: user", () =>{
     });
 
     after(done =>{
-        db.dropTable('USERSTEST');
+        db.clearTable('USERS');
         done();
     });
 
