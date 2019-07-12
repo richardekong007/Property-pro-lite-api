@@ -17,7 +17,7 @@ const createUser = () =>{
         .setIsAdmin(true)
         .build();
         
-        return user;
+    return user;
 };
 
 const expect = chai.expect;
@@ -34,12 +34,12 @@ describe("api.v1 Route: user", () =>{
 
     before(() => {
        return db.query(sqlStatement, values)
-                .then(result => console.log(result.rows[0]))
-                .catch((err) => console.error(err));
+                .catch((err) => alert(err.message));
     });
 
     after(done =>{
-        db.clearTable('USERS');
+        const table = 'USERS';
+        db.clearTable(table);
         done();
     });
 

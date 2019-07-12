@@ -41,5 +41,4 @@ const devTemplate = `
 
 const propertyTemplate = (tableUser === process.env.DB_USER_TEST) ? testTemplate : devTemplate;
 
-console.log(propertyTemplate);
 export default propertyTemplate;
