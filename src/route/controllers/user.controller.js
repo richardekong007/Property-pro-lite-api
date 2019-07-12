@@ -29,8 +29,10 @@ const signupUser = (req, res) =>{
     const sqlStatement = "INSERT INTO USERS(email, first_name, last_name, password, phoneNumber, address, is_admin) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *";
     bcrypt.hash(user.password, saltRounds)
         .then(hash =>{
-            if (!hash) 
+            if (!hash){
                 console.log("failed to hash password");
+                return;
+            } 
             user.password = hash;
             const {email, first_name, last_name,password,phoneNumber, address, is_admin} = user;
             const values = [email, first_name, last_name, password, phoneNumber, address, is_admin];
@@ -67,8 +69,10 @@ const signinUser = (req, res) =>{
     const plainTextPassword = req.body.password;
     db.findOne("Users", {email:req.body.email})
         .then(results =>{
-            if (results.rowCount < 1 ) 
+            if (results.rowCount < 1 ){
                 console.log("Wrong email!");
+                return;
+            } 
             const record = results.rows[0];
             const hash = record.password;
             bcrypt.compare(plainTextPassword, hash)
@@ -97,4 +101,3 @@ const signinUser = (req, res) =>{
 };
 
 export {signupUser, signinUser};
-
