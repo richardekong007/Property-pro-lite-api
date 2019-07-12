@@ -88,19 +88,27 @@ const updateProperty = (req, res) =>{
     const table = "PROPERTY";
     const sqlStatement = prepareUpdateStatement(table,req.body);
     const values = [...Object.values(req.body), parseInt(req.params.id)];
-    db.query(sqlStatement, values)
+    db.getConnectionPool().connect((err, client, done)=>{
+        if (err) throw err;
+        client.query(sqlStatement, values)
         .then((result)=>{
+            done();
             res.status(200).json({status:"success", data:result.rows[0]})
         })
         .catch((err)=> res.status(400).json({status:"error", error:err.message}));
+    });
+    
 };
 
 const markAsSold = (req, res) =>{
 
     const sqlStatement = "UPDATE PROPERTY SET status = $1 WHERE id = $2 RETURNING id, status, type, state, city, address, price, created_on, image_url;"
     const values = [req.params.sold, parseInt(req.params.id)];
-    db.query(sqlStatement, values)
+    db.getConnectionPool().connect((err, client, done) =>{
+        if (err) throw err;
+        client.query(sqlStatement, values)
         .then(result => {
+            done();
             res.status(200).json({
                 status:"success",
                 data:result.rows[0]
@@ -109,70 +117,89 @@ const markAsSold = (req, res) =>{
         .catch(err => res.status(400).json({
             status:"error", error:err.message
         }));
+    })
 };
 
 const deleteProperty = (req, res) =>{
     const sqlStatement = "DELETE FROM PROPERTY WHERE id = $1 RETURNING *;";
     const values = [parseInt(req.params.id)];
+    db.getConnectionPool().connect((err, client, done)=>{
+        if (err) throw err;
+        client.query(sqlStatement, values)
+            .then(result =>{
+                done();
+                if (!result || result.rowCount < 1) throw new Error("No record deleted");
+                res.status(200).json({
+                    status:"success",
+                    data:{message: "Operation successful"}
+                });
+            })
+            .catch(err => res.status(404).json({
+                status:"error", error:err.message
+            }));
+    });
 
-    db.query(sqlStatement, values)
-        .then(result =>{
-            if (!result || result.rowCount < 1) throw new Error("No record deleted");
-            res.status(200).json({
-                status:"success",
-                data:{message: "Operation successful"}
-            });
-        })
-        .catch(err => res.status(404).json({
-            status:"error", error:err.message
-        }));
 }
 
 const findAllProperties = (req, res) =>{
     const sqlStatement = "SELECT id, status, type, state, city, address, price, created_on, image_url FROM PROPERTY ORDER BY id ASC;";
-    db.query(sqlStatement)
-        .then(results => {
-                if(!results || results.rowCount < 1) throw new Error("No record found");
-                res.status(200).json({
-                    status:200,
-                    data:results.rows
-            });
-        })
-        .catch(err => res.status(404).json({
-            status:"error", error:err.message
-        }));
+    db.getConnectionPool().connect((err, client, done) =>{
+        if (err) throw err;
+        client.query(sqlStatement)
+            .then(results => {
+                    done();
+                    if(!results || results.rowCount < 1) throw new Error("No record found");
+                    res.status(200).json({
+                        status:200,
+                        data:results.rows
+                });
+            })
+            .catch(err => res.status(404).json({
+                status:"error", error:err.message
+            }));
+    });
+    
 };
 
 const findPropertyByType = (req, res) =>{
     const sqlStatement = "SELECT id, status, type, state, city, address, price, created_on, image_url FROM PROPERTY WHERE type = $1 ORDER BY id ASC;";
     const values = [req.query.type];
-    db.query(sqlStatement,values)
-        .then(results => {
-            if (!results || results.rowCount < 1) throw new Error("No Records!");
-            res.status(200).json({
-                status:200,
-                data:results.rows
-            });
-        })
-        .catch(err => res.status(404).json({
-            status:"error", error:err.message
-        }));
+    db.getConnectionPool().connect((err, client, done) =>{
+        if (err) throw err;
+        client.query(sqlStatement,values)
+            .then(results => {
+                done();
+                if (!results || results.rowCount < 1) throw new Error("No Records!");
+                res.status(200).json({
+                    status:200,
+                    data:results.rows
+                });
+            })
+            .catch(err => res.status(404).json({
+                status:"error", error:err.message
+            }));
+    });
+
 };
 
 const findPropertyById = (req, res) => {
     const sqlStatement = "SELECT id, status, type, state, city, address, price, created_on, image_url FROM PROPERTY WHERE id = $1;";
     const values = [parseInt(req.params.id)];
-    db.query(sqlStatement, values)
-        .then(results => {
-            if (results.rowCount < 1) throw new Error("No record found");
-            res.status(200).json({
-                status:200,
-                data:results.rows[0]
-            });
-        })
-        .catch(err=> res.status(404).json({
-            status:"error", error:err.message
-        }));
+    db.getConnectionPool().connect((err, client, done) =>{
+        if (err) throw err;
+        client.query(sqlStatement, values)
+            .then(results => {
+                done();
+                if (results.rowCount < 1) throw new Error("No record found");
+                res.status(200).json({
+                    status:200,
+                    data:results.rows[0]
+                });
+            })
+            .catch(err=> res.status(404).json({
+                status:"error", error:err.message
+            }));
+    });
 };
 
 export {

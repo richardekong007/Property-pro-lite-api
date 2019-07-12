@@ -36,19 +36,23 @@ describe("api.v1 routes: Property", () =>{
     const values = [owner,status,price,state,city,address,type,created_on,image_url];
     const sqlStatement = "INSERT INTO PROPERTY(owner,status,price,state,city,address,type,created_on,image_url) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *;";
     before(() =>{
-        return db.query(sqlStatement, values)
-                 .then(result => {
-                     property.id = result.rows[0].id;
-                     console.log("Inserted Property:",result.rows[0]);
-                  })
-                 .catch(err => console.log(err));
-
+        return db.getConnectionPool()
+                 .connect((err, client, done) =>{
+                    if (err) throw err;
+                        client.query(sqlStatement, values)
+                           .then(result => {
+                                done();
+                                property.id = result.rows[0].id;
+                                console.log("Inserted Property:",result.rows[0]);
+                           })
+                           .catch(err => console.log(err));
+                    });
     });
 
-    after(() =>{
+    after(done =>{
         console.log("Property id: ",property.id)
-        return db.clearTable("PROPERTY")
-                 .catch(err => console.error(err));
+        db.clearTable("PROPERTY");
+        done();
     });
 
     describe("POST/property", () =>{

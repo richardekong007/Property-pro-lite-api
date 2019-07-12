@@ -43,9 +43,16 @@ class Db {
     }
 
     createTable (queryText){
-        this._dbPool.query(queryText)
-            .then(results => results.forEach(result=> console.log(`EXECUTED ${result.command} COMMAND`)))
-            .catch(err => console.error(err));
+        this._dbPool.connect((err, client, done) =>{
+             if (err) console.log(err);
+             client.query(queryText)
+                    .then(results => {
+                        done();
+                        results.forEach(result=> console.log(`EXECUTED ${result.command} COMMAND`));
+                    })
+                    .catch(err => console.error(err));
+        });
+
     }
 
     setupTables (){
@@ -55,13 +62,25 @@ class Db {
 
     dropTable (table){
         const stmt = `DROP TABLE IF EXISTS ${table} CASCADE;`;
-        return this._dbPool.query(stmt);
+        this._dbPool.connect((err, client, done)=> {
+            if (err) console.log(err);
+            client.query(stmt)
+                .then(() => done())
+                .catch(err => {
+                    throw err;
+                });
+        });
             
     }
 
     clearTable (table){
         const stmt = `DELETE FROM ${table} CASCADE;`;
-        return this._dbPool.query(stmt);
+        this._dbPool.connect((err, client, done) =>{
+            if (err) console.log(err);
+            client.query(stmt)
+                .then(()=> done())
+                .catch(err => console.log(err));
+        });
     }
 
     getConnectionPool (){
