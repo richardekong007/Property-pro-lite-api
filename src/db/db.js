@@ -94,6 +94,13 @@ class Db {
         return this._dbPool.query(queryText, values);
     }
 
+    findOne (table, data){
+        const column = Object.keys(data)[0];
+        const values = [Object.values(data)[0]];
+        const sqlStatement = `SELECT * FROM ${table} WHERE ${column} = $1`;
+        return this._dbPool.query(sqlStatement, values);
+    }
+
 }
 
 export default Db;
