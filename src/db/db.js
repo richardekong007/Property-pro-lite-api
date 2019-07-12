@@ -12,7 +12,8 @@ const devConfig = {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     max: process.env.DB_MAX_CONN,
-    idleTimeoutMillis: process.env.DB_IDLE_TIMEOUT_MILLIS
+    idleTimeoutMillis: process.env.DB_IDLE_TIMEOUT_MILLIS,
+    ssl: !(process.env.DB_HOST === 'localhost')
 };
 
 const testConfig = {
@@ -22,7 +23,9 @@ const testConfig = {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     max: process.env.DB_MAX_CONN,
-    idleTimeoutMillis: process.env.DB_IDLE_TIMEOUT_MILLIS
+    idleTimeoutMillis: process.env.DB_IDLE_TIMEOUT_MILLIS,
+    ssl: !(process.env.DB_HOST === 'localhost')
+    
 }
 
 class Db {
@@ -34,7 +37,7 @@ class Db {
         }else{
             this._dbPool = new Pool(testConfig);
         }
-        this.setupTables(); 
+        this.setupTables();  
         console.log("Environment:",process.env.NODE_ENV);
     }
 
@@ -43,9 +46,16 @@ class Db {
     }
 
     createTable (queryText){
-        this._dbPool.query(queryText)
-            .then(results => results.forEach(result=> console.log(`EXECUTED ${result.command} COMMAND`)))
-            .catch(err => console.error(err));
+        this._dbPool.connect((err, client, done) =>{
+             if (err) console.log(err);
+             client.query(queryText)
+                    .then(results => {
+                        done();
+                        results.forEach(result=> console.log(`EXECUTED ${result.command} COMMAND`));
+                    })
+                    .catch(err => console.error(err));
+        });
+
     }
 
     setupTables (){
@@ -53,11 +63,31 @@ class Db {
         this.createTable(propertyTemplate);
     }
 
+    dropTable (table){
+        const stmt = `DROP TABLE IF EXISTS ${table} CASCADE;`;
+        this._dbPool.connect((err, client, done)=> {
+            if (err) console.log(err);
+            client.query(stmt)
+                .then(() => done())
+                .catch(err => {
+                    throw err;
+                });
+        });
+            
+    }
+
     clearTable (table){
-        const stmt = `DELETE FROM ${table};`;
-        this._dbPool.query(stmt)
-            .then(result => console.log(result))
-            .catch(err => console.error(err));
+        const stmt = `DELETE FROM ${table} CASCADE;`;
+        this._dbPool.connect((err, client, done) =>{
+            if (err) console.log(err);
+            client.query(stmt)
+                .then(()=> done())
+                .catch(err => console.log(err));
+        });
+    }
+
+    getConnectionPool (){
+        return this._dbPool;
     }
 
     query (queryText, values){
