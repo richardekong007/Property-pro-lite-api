@@ -1,5 +1,5 @@
 import app from '../src/index.js';
-import {after, before, describe, it} from 'mocha';
+import {before, describe, it} from 'mocha';
 import DB from '../src/db/db.js';
 import chai from "chai";
 import chaiHttp from "chai-http";
@@ -48,12 +48,6 @@ describe('api.v1 routes: Flag', () =>{
                     })
                     .catch(err => console.log(err.detail));
             });
-        done();
-    });
-
-    after(done =>{
-        const table = "FLAGS";
-        db.dropTable(table);
         done();
     });
 
