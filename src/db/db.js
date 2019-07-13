@@ -3,40 +3,18 @@ import dotenv from 'dotenv';
 import usersTableTemplate from './tables/users.js'
 import propertyTemplate from './tables/properties.js';
 import flagsTemplate from './tables/flags.js';
+import config from '../db/config.js';
 
 dotenv.config();
-
-const devConfig = {
-    user: process.env.DB_USER,
-    database: process.env.DB,
-    password: process.env.DB_PSWD,
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    max: process.env.DB_MAX_CONN,
-    idleTimeoutMillis: process.env.DB_IDLE_TIMEOUT_MILLIS,
-    ssl: !(process.env.DB_HOST === 'localhost')
-};
-
-const testConfig = {
-    user: process.env.DB_USER_TEST,
-    database: process.env.DB_TEST,
-    password: process.env.DB_PSWD_TEST,
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    max: process.env.DB_MAX_CONN,
-    idleTimeoutMillis: process.env.DB_IDLE_TIMEOUT_MILLIS,
-    ssl: !(process.env.DB_HOST === 'localhost')
-    
-}
 
 class Db {
 
     constructor (){
 
         if (process.env.NODE_ENV !== "test"){
-            this._dbPool = new Pool(devConfig);
+            this._dbPool = new Pool(config.dev);
         }else{
-            this._dbPool = new Pool(testConfig);
+            this._dbPool = new Pool(config.test);
         }
         this.setupTables();  
         console.log("Environment:",process.env.NODE_ENV);
