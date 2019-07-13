@@ -49,7 +49,7 @@ const insertProperty = (database, property, response) =>{
                 });
             })
             .catch(err => response.status(412).json({
-                status:"error", error:err.message
+                status:"error", error:err.detail
             }));
 };
 
@@ -103,7 +103,7 @@ const updateProperty = (req, res) =>{
             done();
             res.status(200).json({status:"success", data:result.rows[0]})
         })
-        .catch((err)=> res.status(400).json({status:"error", error:err.message}));
+        .catch((err)=> res.status(400).json({status:"error", error:err.detail}));
     });
     
 };
@@ -123,7 +123,7 @@ const markAsSold = (req, res) =>{
             });
         })
         .catch(err => res.status(400).json({
-            status:"error", error:err.message
+            status:"error", error:err.detail
         }));
     })
 };
@@ -143,7 +143,7 @@ const deleteProperty = (req, res) =>{
                 });
             })
             .catch(err => res.status(404).json({
-                status:"error", error:err.message
+                status:"error", error:err.detail
             }));
     });
 
@@ -163,7 +163,7 @@ const findAllProperties = (req, res) =>{
                 });
             })
             .catch(err => res.status(404).json({
-                status:"error", error:err.message
+                status:"error", error:err.detail
             }));
     });
     
@@ -184,7 +184,7 @@ const findPropertyByType = (req, res) =>{
                 });
             })
             .catch(err => res.status(404).json({
-                status:"error", error:err.message
+                status:"error", error:err.detail
             }));
     });
 
@@ -205,7 +205,7 @@ const findPropertyById = (req, res) => {
                 });
             })
             .catch(err=> res.status(404).json({
-                status:"error", error:err.message
+                status:"error", error:err.detail
             }));
     });
 };

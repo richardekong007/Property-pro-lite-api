@@ -7,7 +7,8 @@ import {signupUser, signinUser} from "../route/controllers/user.controller.js";
 import Authenticator from "../../middleware/authenticator.js";
 import {postPropertyAdvert, updateProperty, markAsSold, deleteProperty, findAllProperties,
      findPropertyByType, findPropertyById} from "../route/controllers/property.controller.js";
-
+import flagProperty from "../route/controllers/flag.controller.js";
+import postFlagValidator from "../../middleware/validators/postFlagValidator.js";
 
 const router = Router();
 
@@ -51,6 +52,8 @@ router.patch("/property/:id", Authenticator.authenticate, updateProperty);
 router.patch(`/property/:id/:${"sold"}`, Authenticator.authenticate, markAsSold);
 
 router.delete("/property/:id", Authenticator.authenticate,deleteProperty);
+
+router.post("/flag", Authenticator.authenticate, postFlagValidator, flagProperty);
 
 export default router;
 

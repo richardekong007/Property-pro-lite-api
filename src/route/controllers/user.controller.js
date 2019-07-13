@@ -59,7 +59,7 @@ const signupUser = (req, res) =>{
                     });
                 })
                 .catch(err => res.status(412).json({
-                    status:"error", error:err.message
+                    status:"error", error:err.detail
                 }));
         })
         .catch(err => res.status(412).json({
@@ -116,7 +116,7 @@ const signinUser = (req, res) =>{
                 }));
         })
         .catch(err => res.status(412).json({
-            status:"error", error:err.message
+            status:"error", error:err.detail
         }));
 };
 
