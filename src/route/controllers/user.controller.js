@@ -1,5 +1,6 @@
 import User from "../../entity/user.js";
 import bcrypt from "bcrypt";
+import TokenGenerator from '../../tokenGenerator.js';
 import Db from "../../db/db.js";
 import {validationResult} from "express-validator"; 
 
@@ -31,7 +32,11 @@ const signupUser = (req, res) =>{
         .then(hash =>{
             if (!hash){
                 console.log("failed to hash password");
-                return;
+                return res.status(400)
+                          .send({
+                              status:"error",
+                              error:"Failed to sign in!"
+                          });
             } 
             user.password = hash;
             const {email, first_name, last_name,password,phoneNumber, address, is_admin} = user;
@@ -39,10 +44,14 @@ const signupUser = (req, res) =>{
             db.query(sqlStatement, values)
                 .then(result => {
                     const record = result.rows[0];
+                    const payload = {id:record.id, email:record.email };
+                    const token = TokenGenerator.generateToken(payload);
+                    process.env.TEMP_TOKEN = token;
                     res.status(201).json({
                         status: "success",
                         data:{
-                            token:"", id: record.id,
+                            token:token,
+                            id: record.id,
                             first_name:record.first_name, 
                             last_name:record.last_name,
                             email:record.email
@@ -53,9 +62,9 @@ const signupUser = (req, res) =>{
                     status:"error", error:err.message
                 }));
         })
-        .catch(err => {
-            alert(err);
-        });
+        .catch(err => res.status(412).json({
+            status:"error", error:err.message
+        }));
 };
 
 const signinUser = (req, res) =>{
@@ -70,20 +79,31 @@ const signinUser = (req, res) =>{
     db.findOne("Users", {email:req.body.email})
         .then(results =>{
             if (results.rowCount < 1 ){
-                console.log("Wrong email!");
-                return;
+                return res.status(401)
+                          .send({
+                              status:"error",
+                              error:"Wrong Email!"
+                            });
             } 
             const record = results.rows[0];
             const hash = record.password;
             bcrypt.compare(plainTextPassword, hash)
                 .then(positive =>{
-                    if (!positive) 
-                    console.log("Wrong password");
+                    if (!positive){ 
+                        return res.status(401)
+                          .send({
+                              status:"error",
+                              error:"Wrong Password!"
+                            });
+                    }
+                    const payload = {id:record.id, email:record.emial};
+                    const token = TokenGenerator.generateToken(payload);
+                    process.env.TEMP_TOKEN = token;
                     res.status(200)
                     .json({
                         status:"success",
                         data:{
-                            token:"",
+                            token:token,
                             id:record.id,
                             first_name:record.first_name,
                             last_name:record.last_name,
@@ -91,13 +111,13 @@ const signinUser = (req, res) =>{
                         }
                     });
                 })
-                .catch(err =>{
-                    alert(err);
-                })
+                .catch(err => res.status(412).json({
+                    status:"error", error:err.message
+                }));
         })
-        .catch(err => {
-            alert(err);
-        });
+        .catch(err => res.status(412).json({
+            status:"error", error:err.message
+        }));
 };
 
 export {signupUser, signinUser};
