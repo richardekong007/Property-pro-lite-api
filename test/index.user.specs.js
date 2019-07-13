@@ -3,10 +3,12 @@ import {describe, before, it, after} from "mocha";
 import chai from "chai";
 import User from "../src/entity/user.js";
 import Db from "../src/db/db.js";
-
+import bcrypt from "bcrypt";
 
 const db = Db.getInstance();
+
 const createUser = () =>{
+    
     const user = new User.Builder()
         .setFirstName('Kong')
         .setLastName('Badass')
@@ -21,7 +23,9 @@ const createUser = () =>{
 };
 
 const expect = chai.expect;
+
 const resBodyKeys = ["status","data"];
+
 const userResDataKeys = ["token","id","first_name","last_name","email"];
 
 describe("api.v1 Route: user", () =>{
@@ -29,11 +33,17 @@ describe("api.v1 Route: user", () =>{
 
     const sqlStatement = "INSERT INTO USERS(email, first_name, last_name,password, phoneNumber, address, is_admin) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *";
 
-    const {email,first_name,last_name,password,phoneNumber,address, is_admin} = user;
-    const values = [email,first_name,last_name,password,phoneNumber,address, is_admin];
+    const {email, first_name, last_name, password, phoneNumber, address, is_admin} = user;
+
+    const saltRounds = 10;
+
+    const hashedPassword = bcrypt.hashSync(password, saltRounds);
+
+    const values = [email,first_name,last_name,hashedPassword,phoneNumber,address, is_admin];
 
     before(() => {
        return db.query(sqlStatement, values)
+                .then()
                 .catch((err) => alert(err.message));
     });
 
@@ -60,6 +70,7 @@ describe("api.v1 Route: user", () =>{
                     expect(res).to.have.status(201);
                     expect(res.body).to.include.keys(resBodyKeys);
                     expect(res.body.data).to.include.keys(userResDataKeys);
+                    expect(res.body.data.token).to.not.be.empty;
                 })
                 .catch((err) => expect(err).to.be.rejected);
         });
@@ -79,10 +90,10 @@ describe("api.v1 Route: user", () =>{
                     expect(res).to.have.status(200);
                     expect(res.body).to.include.keys(resBodyKeys);
                     expect(res.body.data).to.include.keys(userResDataKeys);
+                    expect(res.body.data.token).to.not.be.empty;
                 })
                 .catch((err) => expect(err).to.be.rejected);
         });
     });
 });
-
 

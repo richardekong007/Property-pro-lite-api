@@ -5,7 +5,7 @@ import chaiHttp from "chai-http";
 import chaiAsPromised from "chai-as-promised";
 import Property from "../src/entity/property.js";
 import Db from '../src/db/db.js';
-
+import "../test/index.user.specs.js";
 
 const db = Db.getInstance();
 const expect = chai.expect;
@@ -43,14 +43,12 @@ describe("api.v1 routes: Property", () =>{
                            .then(result => {
                                 done();
                                 property.id = result.rows[0].id;
-                                console.log("Inserted Property:",result.rows[0]);
                            })
                            .catch(err => console.log(err));
                     });
     });
 
     after(done =>{
-        console.log("Property id: ",property.id)
         db.clearTable("PROPERTY");
         done();
     });

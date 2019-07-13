@@ -34,6 +34,13 @@ const insertProperty = (database, property, response) =>{
 
     database.query(sqlStatement, values)
             .then(result =>{
+                if (result.rowCount < 1){
+                    response.status(400)
+                        .send({
+                            status:"error",
+                            error:"No record updated!"
+                        })
+                }
                 const {id,status,type,state,city,address,price,created_on,image_url} = result.rows[0];
                 const data = {id,status,type,state,city,address,price,created_on,image_url};
                 response.status(201).json({
@@ -69,11 +76,12 @@ const prepareUpdateStatement = (table,reqestBody) =>{
 
     let statement = [`UPDATE ${table} SET`];
     const keys = Object.keys(reqestBody);
+    console.log(reqestBody);
     keys.forEach((key,index) =>{
-        statement.push((index < keys.length - 1) ? ",":` ${key} = $${index+1}`);
+        statement.push(` ${key} = $${index+1}`);
+        if ((index < keys.length-1)) statement.push(",");
     });
-    statement.push(` WHERE id = $${keys.length+1} RETURNING id, status, type, 
-    state, city, address, price, created_on, image_url;`);
+    statement.push(` WHERE id = $${keys.length+1} RETURNING id, status, type, state, city, address, price, created_on, image_url;`);
     return statement.join("");
 };
 
@@ -86,7 +94,7 @@ const updateProperty = (req, res) =>{
         });
     }
     const table = "PROPERTY";
-    const sqlStatement = prepareUpdateStatement(table,req.body);
+    const sqlStatement = prepareUpdateStatement(table, req.body);
     const values = [...Object.values(req.body), parseInt(req.params.id)];
     db.getConnectionPool().connect((err, client, done)=>{
         if (err) throw err;

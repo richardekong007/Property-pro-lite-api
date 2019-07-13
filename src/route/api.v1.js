@@ -4,8 +4,10 @@ import signupValidator from "../../middleware/validators/signupValidator.js";
 import signinValidator from "../../middleware/validators/signinValidator.js";
 import postPropertyValidator from "../../middleware/validators/postPropertyValidator.js";
 import {signupUser, signinUser} from "../route/controllers/user.controller.js";
+import Authenticator from "../../middleware/authenticator.js";
 import {postPropertyAdvert, updateProperty, markAsSold, deleteProperty, findAllProperties,
      findPropertyByType, findPropertyById} from "../route/controllers/property.controller.js";
+
 
 const router = Router();
 
@@ -36,19 +38,19 @@ router.post("/auth/signup", signupValidator, signupUser);
 
 router.post("/auth/signin", signinValidator , signinUser); 
 
-router.post("/property", upload.single('image_url'), postPropertyValidator, postPropertyAdvert); 
+router.post("/property", Authenticator.authenticate, upload.single('image_url'), postPropertyValidator, postPropertyAdvert); 
 
-router.patch("/property/:id", updateProperty);
+router.get("/property", Authenticator.authenticate, findAllProperties);
 
-router.patch(`/property/:id/:${"sold"}`, markAsSold);
+router.get("/property/type", Authenticator.authenticate,findPropertyByType);
 
-router.delete("/property/:id", deleteProperty);
+router.get("/property/:id", Authenticator.authenticate,findPropertyById);
 
-router.get("/property", findAllProperties);
+router.patch("/property/:id", Authenticator.authenticate, updateProperty);
 
-router.get("/property/type", findPropertyByType);
+router.patch(`/property/:id/:${"sold"}`, Authenticator.authenticate, markAsSold);
 
-router.get("/property/:id", findPropertyById);
+router.delete("/property/:id", Authenticator.authenticate,deleteProperty);
 
 export default router;
 
