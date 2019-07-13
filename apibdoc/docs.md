@@ -92,6 +92,24 @@ This page presents all routes and resource available in this Application Program
         - status: `success` (string) - This denotes the status of this operation
         - data (DeleteMessage)
 
+# Group Flag
+
+## Flag Collection [/flag]
+
+### Flag a property Ad [POST/flag]
++ Request (application/json)
+    + Attributes
+        - property_id: `1` (number) - This denotes the ID of the property to flag
+        - created_on: `2019-07-02T11:45:45.542Z` (string) - This denotes the date on which the flag was initiated
+        - reason: `Security` (string) - This denotes the reason for flagging/reporting a property Ad
+        - description: `Regional crisis` - A brief description of reason
+
++ Response 201 (application/json)
+    + Attributes
+        - status: `success` (string) - This denotes the status of this operation
+        - data (Flag)
+
+
 
 # Data Structures
 
@@ -117,12 +135,20 @@ This page presents all routes and resource available in this Application Program
 - created_on: `2019-07-02T11:45:45.542Z` (string) - This denotes the date of property advert
 - image_url: `https:https://res.cloudinary.com/uerterer/image/upload/v13847477/4387394749349vhf.png` (string) - This denotes the url to this property's image
 
+## Flag (object)
+- id:`1` (number) - This denotes the ID of the flag
+- property_id: `1` (number) - This denotes the ID of the property being flagged/reported
+- created_on: `2019-07-02T11:45:45.542Z` (string) - This denotes the date on which the flag was initiated
+- reason: `Security` (string) - This denotes the reason for flagging/reporting a property Ad
+- description: `Regional crisis` - A brief description of reason 
+
 ## UserResponseData (object)
 - token: `45erkjherht45495783` (string) - This denotes a token granted after authenticating a user
 - id:`1` (number) - This denotes the ID of a user
 - first_name: `King` (string) - This denotes the user's first name
 - last_name: `James` (string) - This denotes the user's last name
 - email: `king@mail.net` (string) - This denotes the user's email
+
 ## PropertyResponseData (object)
 - id: `1` (number) - This denotes the ID of the property
 - status: `available` (string) - This denotes that this property is available
