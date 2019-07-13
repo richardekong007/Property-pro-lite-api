@@ -49,7 +49,7 @@ describe("api.v1 Route: user", () =>{
 
     after(done =>{
         const table = 'USERS';
-        db.clearTable(table);
+        db.dropTable(table);
         done();
     });
 

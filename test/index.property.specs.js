@@ -49,7 +49,7 @@ describe("api.v1 routes: Property", () =>{
     });
 
     after(done =>{
-        db.clearTable("PROPERTY");
+        db.dropTable("PROPERTY");
         done();
     });
 

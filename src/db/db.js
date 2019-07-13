@@ -2,6 +2,7 @@ import {Pool} from 'pg';
 import dotenv from 'dotenv';
 import usersTableTemplate from './tables/users.js'
 import propertyTemplate from './tables/properties.js';
+import flagsTemplate from './tables/flags.js';
 
 dotenv.config();
 
@@ -61,6 +62,7 @@ class Db {
     setupTables (){
         this.createTable(usersTableTemplate);
         this.createTable(propertyTemplate);
+        this.createTable(flagsTemplate);
     }
 
     dropTable (table){
