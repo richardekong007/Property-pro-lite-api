@@ -46,7 +46,7 @@ describe('api.v1 routes: Flag', () =>{
                             console.log('No property flaged') 
                         flag.id = results.rows[0].id
                     })
-                    .catch(err => alert(err));
+                    .catch(err => console.log(err.detail));
             });
         done();
     });
