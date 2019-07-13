@@ -53,7 +53,7 @@ describe('api.v1 routes: Flag', () =>{
 
     after(done =>{
         const table = "FLAGS";
-        db.clearTable(table);
+        db.dropTable(table);
         done();
     });
 
