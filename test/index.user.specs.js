@@ -1,5 +1,5 @@
 import app from "../src/index.js";
-import {describe, before, it, after} from "mocha";
+import {describe, before, it} from "mocha";
 import chai from "chai";
 import User from "../src/entity/user.js";
 import Db from "../src/db/db.js";
@@ -47,12 +47,6 @@ describe("api.v1 Route: user", () =>{
                 .catch((err) => alert(err.message));
     });
 
-    after(done =>{
-        const table = 'USERS';
-        db.dropTable(table);
-        done();
-    });
-
     describe("POST/auth/signup", () =>{
         it("Should signup a new user", () =>{
             return chai.request(app)
@@ -78,8 +72,8 @@ describe("api.v1 Route: user", () =>{
 
     describe("POST/auth/signin", () =>{
         it("Should signin an existing user", () =>{
-            const email = user.email;
-            const password = user.password;
+            const email = "bong2@mail.net";
+            const password = "Bongzooki7";
             return chai.request(app)
                 .post("/auth/signin")
                 .send({

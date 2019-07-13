@@ -1,5 +1,5 @@
 import app from '../src/index.js';
-import {before, after, describe, it} from "mocha";
+import {before,describe, it} from "mocha";
 import chai from "chai";
 import chaiHttp from "chai-http";
 import chaiAsPromised from "chai-as-promised";
@@ -46,11 +46,6 @@ describe("api.v1 routes: Property", () =>{
                            })
                            .catch(err => console.log(err));
                     });
-    });
-
-    after(done =>{
-        db.dropTable("PROPERTY");
-        done();
     });
 
     describe("POST/property", () =>{
