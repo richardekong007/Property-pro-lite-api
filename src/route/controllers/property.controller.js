@@ -98,7 +98,12 @@ const updateProperty = (req, res) =>{
     const sqlStatement = prepareUpdateStatement(table, req.body);
     const values = [...Object.values(req.body), parseInt(req.params.id)];
     db.getConnectionPool().connect((err, client, done)=>{
-        if (err) throw err;
+        if (err) {
+            return res.status(500).json({
+                status:"error", 
+                error:"Server error"
+            });
+        }
         client.query(sqlStatement, values)
         .then((result)=>{
             done();
@@ -114,7 +119,12 @@ const markAsSold = (req, res) =>{
     const sqlStatement = "UPDATE PROPERTY SET status = $1 WHERE id = $2 RETURNING id, status, type, state, city, address, price, created_on, image_url;"
     const values = [req.params.sold, parseInt(req.params.id)];
     db.getConnectionPool().connect((err, client, done) =>{
-        if (err) throw err;
+        if (err) {
+            return res.status(500).json({
+                status:"error", 
+                error:"Server error"
+            });
+        }
         client.query(sqlStatement, values)
         .then(result => {
             done();
@@ -133,7 +143,12 @@ const deleteProperty = (req, res) =>{
     const sqlStatement = "DELETE FROM PROPERTY WHERE id = $1 RETURNING *;";
     const values = [parseInt(req.params.id)];
     db.getConnectionPool().connect((err, client, done)=>{
-        if (err) throw err;
+        if (err){
+            return res.status(500).json({
+                status:"error", 
+                error:"Server error"
+            });
+        }
         client.query(sqlStatement, values)
             .then(result =>{
                 done();
@@ -163,15 +178,25 @@ const deleteProperty = (req, res) =>{
 }
 
 const findAllProperties = (req, res) =>{
-    const sqlStatement = "SELECT id, status, type, state, city, address, price, created_on, image_url FROM PROPERTY ORDER BY id ASC;";
+    const sqlStatement = "SELECT PROPERTY.id, PROPERTY.status, PROPERTY.type, PROPERTY.state, PROPERTY.city, PROPERTY.address, PROPERTY.price, PROPERTY.created_on, PROPERTY.image_url, USERS.email as owner_email, USERS.phone_number as owner_phone_number FROM USERS INNER JOIN PROPERTY ON USERS.id = PROPERTY.owner ORDER BY id ASC;";
     db.getConnectionPool().connect((err, client, done) =>{
-        if (err) throw err;
+        if (err) {
+            return res.status(500).json({
+                status:"error", 
+                error:"Server error"
+            });
+        }
         client.query(sqlStatement)
             .then(results => {
                     done();
-                    if(!results || results.rowCount < 1) throw new Error("No record found");
+                    if(!results || results.rowCount < 1){
+                        res.status(404).json({
+                            status:"success", 
+                            error:"No record found"
+                        });
+                    } 
                     res.status(200).json({
-                        status:200,
+                        status:"success",
                         data:results.rows
                 });
             })
@@ -183,37 +208,53 @@ const findAllProperties = (req, res) =>{
 };
 
 const findPropertyByType = (req, res) =>{
-    const sqlStatement = "SELECT id, status, type, state, city, address, price, created_on, image_url FROM PROPERTY WHERE type = $1 ORDER BY id ASC;";
+    const sqlStatement = "SELECT PROPERTY.id, PROPERTY.status, PROPERTY.type, PROPERTY.state, PROPERTY.city, PROPERTY.address, PROPERTY.price, PROPERTY.created_on, PROPERTY.image_url, USERS.email as owner_email, USERS.phone_number as owner_phone_number FROM USERS INNER JOIN PROPERTY ON USERS.id = PROPERTY.owner WHERE type = $1 ORDER BY id ASC;";
     const values = [req.query.type];
     db.getConnectionPool().connect((err, client, done) =>{
-        if (err) throw err;
+        if (err) {
+            return res.status(500).json({
+                status:"error", 
+                error:"Server error"
+            });
+        }
         client.query(sqlStatement,values)
             .then(results => {
                 done();
-                if (!results || results.rowCount < 1) throw new Error("No Records!");
+                if (!results || results.rowCount < 1){
+                    res.status(404).json({
+                        status:"error",
+                         error:"No Record!"
+                        });
+                } 
                 res.status(200).json({
-                    status:200,
+                    status:"success",
                     data:results.rows
                 });
             })
             .catch(err => res.status(404).json({
-                status:"error", error:err.detail
+                status:"error",
+                error:err.detail
             }));
     });
 
 };
 
 const findPropertyById = (req, res) => {
-    const sqlStatement = "SELECT id, status, type, state, city, address, price, created_on, image_url FROM PROPERTY WHERE id = $1;";
+    const sqlStatement = "SELECT PROPERTY.id, PROPERTY.status, PROPERTY.type, PROPERTY.state, PROPERTY.city, PROPERTY.address, PROPERTY.price, PROPERTY.created_on, PROPERTY.image_url, USERS.email as owner_email, USERS.phone_number as owner_phone_number FROM USERS INNER JOIN PROPERTY ON USERS.id = PROPERTY.owner WHERE PROPERTY.id = $1;";
     const values = [parseInt(req.params.id)];
     db.getConnectionPool().connect((err, client, done) =>{
-        if (err) throw err;
+        if (err) {
+            res.status(500).json({
+                status:"error",
+                error:"Server error"
+            });
+        }
         client.query(sqlStatement, values)
             .then(results => {
                 done();
                 if (results.rowCount < 1) throw new Error("No record found");
                 res.status(200).json({
-                    status:200,
+                    status:"success",
                     data:results.rows[0]
                 });
             })

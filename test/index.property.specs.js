@@ -85,10 +85,10 @@ describe("api.v1 routes: Property", () =>{
                     expect(res).to.have.status(200);
                     expect(res.body).to.not.be.empty;
                     expect(res.body).to.include.keys(responseBodyKeys);
-                    expect(res.body.status).to.be.a("number");
+                    expect(res.body.status).to.be.a("string");
                     expect(res.body.data).to.not.be.empty;
                     expect(res.body.data).to.be.a("object");
-                    expect(res.body.data).to.include.keys(propertyDataKeys); 
+                    expect(res.body.data).to.include.keys([...propertyDataKeys, "owner_email", "owner_phone_number"]); 
                 })
                 .catch((err) => expect(err).to.be.rejected);
         });
@@ -99,10 +99,12 @@ describe("api.v1 routes: Property", () =>{
             return chai.request(app)
                 .get("/property")
                 .then((res) =>{
+                    expect(res).to.have.status(200);
                     expect(res.body).to.include.keys(responseBodyKeys);
-                    expect(res.body.status).to.be.a("number");
+                    expect(res.body.status).to.be.a("string");
                     expect(res.body.data).to.be.a("array");
-                    res.body.data.forEach(datum => expect(datum).to.include.keys(propertyDataKeys));
+                    res.body.data.forEach(datum => expect(datum).to.include
+                    .keys([...propertyDataKeys, "owner_email", "owner_phone_number"]));
                 })
                 .catch((err) => expect(err).to.be.rejected);
         });
@@ -114,12 +116,12 @@ describe("api.v1 routes: Property", () =>{
                 .get("/property/type?type=Duplex")
                 .then((res) => {
                     expect(res).to.not.be.undefined;
-                    expect(res.body).to.have.status(200);
+                    expect(res).to.have.status(200);
                     expect(res.body).to.include.keys(responseBodyKeys);
-                    expect(res.body.status).to.be.a("number");
+                    expect(res.body.status).to.be.a("string");
                     expect(res.body.data).to.be.a("array");
                     (res.body.data).forEach(datum => expect(datum).to.include
-                    .keys(propertyDataKeys));
+                    .keys([...propertyDataKeys, "owner_email", "owner_phone_number"]));
                     
                 })
                 .catch((err) => expect(err).to.be.rejected);
