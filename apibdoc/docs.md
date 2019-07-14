@@ -47,19 +47,19 @@ This page presents all routes and resource available in this Application Program
     - id: `1` (number) - This denotes the ID of the retreived property
 + Response 200 (application/json)
     + Attributes
-        - status: `200` (number) - This denotes the status of this operation
+        - status: `success` (string) - This denotes the status of this operation
         - data (PropertyResponseData)
 
 ### Get all Property adverts [GET/property] 
 + Response 200 (application/json)
     + Attributes
-        - status: `201` (number) - This denotes the status of this operation
+        - status: `success` (string) - This denotes the status of this operation
         - data (array[PropertyResponseData]) - This denotes a list of retreived properties
 
 ### Get all property adverts offering a specific type [GET/property/type?type=PropertyType]
 + Response 200 (application/json)
     + Attributes
-        - status: `200` (number) - This denotes the status of this operation
+        - status: `success` (string) - This denotes the status of this operation
         - data (array[PropertyResponseData]) - This denotes a list of retreived properties
 
 ### Update property data [PATCH/property/{id}]
