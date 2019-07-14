@@ -7,7 +7,7 @@ class User {
         this.last_name = build.last_name;
         this.password = build.password;
         this.address = build.address;
-        this.phoneNumber = build.phoneNumber;
+        this.phone_number = build.phone_number;
         this.is_admin = build.is_admin;
     }
 
@@ -40,7 +40,7 @@ class User {
             }
 
             setPhoneNumber (phone){
-                this.phoneNumber = phone;
+                this.phone_number = phone;
                 return this;
             }
 

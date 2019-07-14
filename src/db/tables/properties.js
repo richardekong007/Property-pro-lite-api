@@ -19,7 +19,7 @@ const statements = [
 ];
 
 if (tableUser === process.env.DB_USER_TEST){ 
-    statements.unshift(`DROP TABLE IF EXISTS PROPERTY;`);
+    statements.unshift(`DROP TABLE IF EXISTS PROPERTY CASCADE;`);
 }
 
 if (tableUser === process.env.DB_USER){

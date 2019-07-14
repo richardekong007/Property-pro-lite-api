@@ -27,7 +27,7 @@ const signupUser = (req, res) =>{
     }
     const saltRounds = 10;
     const user = createUser(req.body);
-    const sqlStatement = "INSERT INTO USERS(email, first_name, last_name, password, phoneNumber, address, is_admin) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *";
+    const sqlStatement = "INSERT INTO USERS(email, first_name, last_name, password, phone_number, address, is_admin) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *";
     bcrypt.hash(user.password, saltRounds)
         .then(hash =>{
             if (!hash){
@@ -39,8 +39,8 @@ const signupUser = (req, res) =>{
                           });
             } 
             user.password = hash;
-            const {email, first_name, last_name,password,phoneNumber, address, is_admin} = user;
-            const values = [email, first_name, last_name, password, phoneNumber, address, is_admin];
+            const {email, first_name, last_name,password,phone_number, address, is_admin} = user;
+            const values = [email, first_name, last_name, password, phone_number, address, is_admin];
             db.query(sqlStatement, values)
                 .then(result => {
                     const record = result.rows[0];

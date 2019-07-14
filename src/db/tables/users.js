@@ -11,14 +11,14 @@ const statements = [
         `first_name VARCHAR(30) NOT NULL,`,
         `last_name VARCHAR(30) NOT NULL,`,
         `password VARCHAR(100) NOT NULL,`,
-        `phoneNumber VARCHAR(12) NOT NULL,`,
+        `phone_number VARCHAR(12) NOT NULL,`,
         `address VARCHAR(60) NOT NULL,`,
         `is_admin BOOLEAN NOT NULL);`,
         `ALTER TABLE IF EXISTS USERS OWNER TO ${tableUser};`
 ];
 
 if (tableUser === process.env.DB_USER_TEST){
-    statements.unshift(`DROP TABLE IF EXISTS USERS;`);
+    statements.unshift(`DROP TABLE IF EXISTS USERS CASCADE;`);
 }
 
 const usersTableTemplate = statements.join(' ');
