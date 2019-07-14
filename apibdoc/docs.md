@@ -119,7 +119,7 @@ This page presents all routes and resource available in this Application Program
 - first_name: `King` (string) - This denotes the first name of the User
 - last_name: `James` (string) - This denotes the last name of the user
 - password: `@%%^$#&` (string) - This denotes the password of the user
-- phoneNumber: `08034734638` (string) - This denotes the phone number of the user
+- phone_number: `08034734638` (string) - This denotes the phone number of the user
 - address: `No.5 Main Street` (string) - This denotes the address of the user
 - is_admin: true (boolean) - This denotes whether the user is an admin, capable posting property adverts
 
@@ -159,6 +159,8 @@ This page presents all routes and resource available in this Application Program
 - price: `60000` (number) - This denotes the price of this property
 - created_on: `2019-07-02T11:45:45.542Z` (string) - This denotes the date of property advert
 - image_url: `https:https://res.cloudinary.com/uerterer/image/upload/v13847477/4387394749349vhf.png` (string) - This denotes the url to this property's image
+- owner_email:`king@mail.net` (string) - denotes the email of the property's owner
+- owner_phone_number: `08034734638` (string) - This denotes the phone number of the property's owner
 
 ## DeleteMessage (object)
 - message: `Deleted successfully!` (string)
