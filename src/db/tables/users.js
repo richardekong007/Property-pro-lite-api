@@ -18,7 +18,7 @@ const statements = [
 ];
 
 if (tableUser === process.env.DB_USER_TEST){
-    statements.unshift(`DROP TABLE IF EXISTS USERS;`);
+    statements.unshift(`DROP TABLE IF EXISTS USERS CASCADE;`);
 }
 
 const usersTableTemplate = statements.join(' ');

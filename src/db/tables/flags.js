@@ -14,7 +14,7 @@ const statements = [
 ];
 
 if (tableUser === process.env.DB_USER_TEST){
-    statements.unshift(`DROP TABLE IF EXISTS FLAGS;`);
+    statements.unshift(`DROP TABLE IF EXISTS FLAGS CASCADE;`);
 }
 
 if (tableUser === process.env.DB_USER){
