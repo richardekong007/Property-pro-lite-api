@@ -6,7 +6,7 @@
     "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"King"</span></span>,
     "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"James"</span></span>,
     "<span class="hljs-attribute">password</span>": <span class="hljs-value"><span class="hljs-string">"@%%^$#&amp;"</span></span>,
-    "<span class="hljs-attribute">phoneNumber</span>": <span class="hljs-value"><span class="hljs-string">"08034734638"</span></span>,
+    "<span class="hljs-attribute">phone_number</span>": <span class="hljs-value"><span class="hljs-string">"08034734638"</span></span>,
     "<span class="hljs-attribute">address</span>": <span class="hljs-value"><span class="hljs-string">"No.5 Main Street"</span></span>,
     "<span class="hljs-attribute">is_admin</span>": <span class="hljs-value"><span class="hljs-literal">true</span>
   </span>}
@@ -37,7 +37,7 @@
           "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
           "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"This denotes the password of the user"</span>
         </span>}</span>,
-        "<span class="hljs-attribute">phoneNumber</span>": <span class="hljs-value">{
+        "<span class="hljs-attribute">phone_number</span>": <span class="hljs-value">{
           "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
           "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"This denotes the phone number of the user"</span>
         </span>}</span>,
@@ -228,7 +228,9 @@
     "<span class="hljs-attribute">address</span>": <span class="hljs-value"><span class="hljs-string">"No.45 Main Street, Agota"</span></span>,
     "<span class="hljs-attribute">price</span>": <span class="hljs-value"><span class="hljs-number">60000</span></span>,
     "<span class="hljs-attribute">created_on</span>": <span class="hljs-value"><span class="hljs-string">"2019-07-02T11:45:45.542Z"</span></span>,
-    "<span class="hljs-attribute">image_url</span>": <span class="hljs-value"><span class="hljs-string">"https:https://res.cloudinary.com/uerterer/image/upload/v13847477/4387394749349vhf.png"</span>
+    "<span class="hljs-attribute">image_url</span>": <span class="hljs-value"><span class="hljs-string">"https:https://res.cloudinary.com/uerterer/image/upload/v13847477/4387394749349vhf.png"</span></span>,
+    "<span class="hljs-attribute">owner_email</span>": <span class="hljs-value"><span class="hljs-string">"king@mail.net"</span></span>,
+    "<span class="hljs-attribute">owner_phone_number</span>": <span class="hljs-value"><span class="hljs-string">"08034734638"</span>
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span></span>,
@@ -276,6 +278,14 @@
         "<span class="hljs-attribute">image_url</span>": <span class="hljs-value">{
           "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
           "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"This denotes the url to this property's image"</span>
+        </span>}</span>,
+        "<span class="hljs-attribute">owner_email</span>": <span class="hljs-value">{
+          "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
+          "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"denotes the email of the property's owner"</span>
+        </span>}</span>,
+        "<span class="hljs-attribute">owner_phone_number</span>": <span class="hljs-value">{
+          "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
+          "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"This denotes the phone number of the property's owner"</span>
         </span>}
       </span>}
     </span>}
@@ -292,7 +302,9 @@
     "<span class="hljs-attribute">address</span>": <span class="hljs-value"><span class="hljs-string">"No.45 Main Street, Agota"</span></span>,
     "<span class="hljs-attribute">price</span>": <span class="hljs-value"><span class="hljs-number">60000</span></span>,
     "<span class="hljs-attribute">created_on</span>": <span class="hljs-value"><span class="hljs-string">"2019-07-02T11:45:45.542Z"</span></span>,
-    "<span class="hljs-attribute">image_url</span>": <span class="hljs-value"><span class="hljs-string">"https:https://res.cloudinary.com/uerterer/image/upload/v13847477/4387394749349vhf.png"</span>
+    "<span class="hljs-attribute">image_url</span>": <span class="hljs-value"><span class="hljs-string">"https:https://res.cloudinary.com/uerterer/image/upload/v13847477/4387394749349vhf.png"</span></span>,
+    "<span class="hljs-attribute">owner_email</span>": <span class="hljs-value"><span class="hljs-string">"king@mail.net"</span></span>,
+    "<span class="hljs-attribute">owner_phone_number</span>": <span class="hljs-value"><span class="hljs-string">"08034734638"</span>
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span></span>,
@@ -340,6 +352,14 @@
         "<span class="hljs-attribute">image_url</span>": <span class="hljs-value">{
           "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
           "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"This denotes the url to this property's image"</span>
+        </span>}</span>,
+        "<span class="hljs-attribute">owner_email</span>": <span class="hljs-value">{
+          "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
+          "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"denotes the email of the property's owner"</span>
+        </span>}</span>,
+        "<span class="hljs-attribute">owner_phone_number</span>": <span class="hljs-value">{
+          "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
+          "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"This denotes the phone number of the property's owner"</span>
         </span>}
       </span>}
     </span>}
@@ -356,7 +376,9 @@
       "<span class="hljs-attribute">address</span>": <span class="hljs-value"><span class="hljs-string">"No.45 Main Street, Agota"</span></span>,
       "<span class="hljs-attribute">price</span>": <span class="hljs-value"><span class="hljs-number">60000</span></span>,
       "<span class="hljs-attribute">created_on</span>": <span class="hljs-value"><span class="hljs-string">"2019-07-02T11:45:45.542Z"</span></span>,
-      "<span class="hljs-attribute">image_url</span>": <span class="hljs-value"><span class="hljs-string">"https:https://res.cloudinary.com/uerterer/image/upload/v13847477/4387394749349vhf.png"</span>
+      "<span class="hljs-attribute">image_url</span>": <span class="hljs-value"><span class="hljs-string">"https:https://res.cloudinary.com/uerterer/image/upload/v13847477/4387394749349vhf.png"</span></span>,
+      "<span class="hljs-attribute">owner_email</span>": <span class="hljs-value"><span class="hljs-string">"king@mail.net"</span></span>,
+      "<span class="hljs-attribute">owner_phone_number</span>": <span class="hljs-value"><span class="hljs-string">"08034734638"</span>
     </span>}
   ]
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
@@ -384,7 +406,9 @@
       "<span class="hljs-attribute">address</span>": <span class="hljs-value"><span class="hljs-string">"No.45 Main Street, Agota"</span></span>,
       "<span class="hljs-attribute">price</span>": <span class="hljs-value"><span class="hljs-number">60000</span></span>,
       "<span class="hljs-attribute">created_on</span>": <span class="hljs-value"><span class="hljs-string">"2019-07-02T11:45:45.542Z"</span></span>,
-      "<span class="hljs-attribute">image_url</span>": <span class="hljs-value"><span class="hljs-string">"https:https://res.cloudinary.com/uerterer/image/upload/v13847477/4387394749349vhf.png"</span>
+      "<span class="hljs-attribute">image_url</span>": <span class="hljs-value"><span class="hljs-string">"https:https://res.cloudinary.com/uerterer/image/upload/v13847477/4387394749349vhf.png"</span></span>,
+      "<span class="hljs-attribute">owner_email</span>": <span class="hljs-value"><span class="hljs-string">"king@mail.net"</span></span>,
+      "<span class="hljs-attribute">owner_phone_number</span>": <span class="hljs-value"><span class="hljs-string">"08034734638"</span>
     </span>}
   ]
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
@@ -423,7 +447,9 @@
     "<span class="hljs-attribute">address</span>": <span class="hljs-value"><span class="hljs-string">"No.45 Main Street, Agota"</span></span>,
     "<span class="hljs-attribute">price</span>": <span class="hljs-value"><span class="hljs-number">60000</span></span>,
     "<span class="hljs-attribute">created_on</span>": <span class="hljs-value"><span class="hljs-string">"2019-07-02T11:45:45.542Z"</span></span>,
-    "<span class="hljs-attribute">image_url</span>": <span class="hljs-value"><span class="hljs-string">"https:https://res.cloudinary.com/uerterer/image/upload/v13847477/4387394749349vhf.png"</span>
+    "<span class="hljs-attribute">image_url</span>": <span class="hljs-value"><span class="hljs-string">"https:https://res.cloudinary.com/uerterer/image/upload/v13847477/4387394749349vhf.png"</span></span>,
+    "<span class="hljs-attribute">owner_email</span>": <span class="hljs-value"><span class="hljs-string">"king@mail.net"</span></span>,
+    "<span class="hljs-attribute">owner_phone_number</span>": <span class="hljs-value"><span class="hljs-string">"08034734638"</span>
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span></span>,
@@ -471,6 +497,14 @@
         "<span class="hljs-attribute">image_url</span>": <span class="hljs-value">{
           "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
           "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"This denotes the url to this property's image"</span>
+        </span>}</span>,
+        "<span class="hljs-attribute">owner_email</span>": <span class="hljs-value">{
+          "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
+          "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"denotes the email of the property's owner"</span>
+        </span>}</span>,
+        "<span class="hljs-attribute">owner_phone_number</span>": <span class="hljs-value">{
+          "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
+          "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"This denotes the phone number of the property's owner"</span>
         </span>}
       </span>}
     </span>}
@@ -488,7 +522,9 @@
     "<span class="hljs-attribute">address</span>": <span class="hljs-value"><span class="hljs-string">"No.45 Main Street, Agota"</span></span>,
     "<span class="hljs-attribute">price</span>": <span class="hljs-value"><span class="hljs-number">60000</span></span>,
     "<span class="hljs-attribute">created_on</span>": <span class="hljs-value"><span class="hljs-string">"2019-07-02T11:45:45.542Z"</span></span>,
-    "<span class="hljs-attribute">image_url</span>": <span class="hljs-value"><span class="hljs-string">"https:https://res.cloudinary.com/uerterer/image/upload/v13847477/4387394749349vhf.png"</span>
+    "<span class="hljs-attribute">image_url</span>": <span class="hljs-value"><span class="hljs-string">"https:https://res.cloudinary.com/uerterer/image/upload/v13847477/4387394749349vhf.png"</span></span>,
+    "<span class="hljs-attribute">owner_email</span>": <span class="hljs-value"><span class="hljs-string">"king@mail.net"</span></span>,
+    "<span class="hljs-attribute">owner_phone_number</span>": <span class="hljs-value"><span class="hljs-string">"08034734638"</span>
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span></span>,
@@ -536,6 +572,14 @@
         "<span class="hljs-attribute">image_url</span>": <span class="hljs-value">{
           "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
           "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"This denotes the url to this property's image"</span>
+        </span>}</span>,
+        "<span class="hljs-attribute">owner_email</span>": <span class="hljs-value">{
+          "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
+          "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"denotes the email of the property's owner"</span>
+        </span>}</span>,
+        "<span class="hljs-attribute">owner_phone_number</span>": <span class="hljs-value">{
+          "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
+          "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"This denotes the phone number of the property's owner"</span>
         </span>}
       </span>}
     </span>}
@@ -632,7 +676,7 @@
       </span>}
     </span>}
   </span>}
-</span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></section></div></div></div><p style="text-align: center;" class="text-muted">Generated by&nbsp;<a href="https://github.com/danielgtaylor/aglio" class="aglio">aglio</a>&nbsp;on 13 Jul 2019</p><script>/* eslint-env browser */
+</span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></section></div></div></div><p style="text-align: center;" class="text-muted">Generated by&nbsp;<a href="https://github.com/danielgtaylor/aglio" class="aglio">aglio</a>&nbsp;on 14 Jul 2019</p><script>/* eslint-env browser */
 /* eslint quotes: [2, "single"] */
 'use strict';
 
