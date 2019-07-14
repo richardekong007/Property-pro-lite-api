@@ -14,7 +14,7 @@ const signupValidator = [
 
     check("address").not().isEmpty().withMessage("Provide an address").escape(),
 
-    check("phoneNumber").not().isEmpty().withMessage("Provide a phone number")
+    check("phone_number").not().isEmpty().withMessage("Provide a phone number")
     .isMobilePhone().withMessage("Phone number is invalid"),
 
     check("password").not().isEmpty().withMessage("Provide password")

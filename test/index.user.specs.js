@@ -31,15 +31,15 @@ const userResDataKeys = ["token","id","first_name","last_name","email"];
 describe("api.v1 Route: user", () =>{
     const user = createUser();
 
-    const sqlStatement = "INSERT INTO USERS(email, first_name, last_name,password, phoneNumber, address, is_admin) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *";
+    const sqlStatement = "INSERT INTO USERS(email, first_name, last_name,password, phone_number, address, is_admin) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *";
 
-    const {email, first_name, last_name, password, phoneNumber, address, is_admin} = user;
+    const {email, first_name, last_name, password, phone_number, address, is_admin} = user;
 
     const saltRounds = 10;
 
     const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
-    const values = [email,first_name,last_name,hashedPassword,phoneNumber,address, is_admin];
+    const values = [email,first_name,last_name,hashedPassword,phone_number,address, is_admin];
 
     before(() => {
        return db.query(sqlStatement, values)
@@ -56,7 +56,7 @@ describe("api.v1 Route: user", () =>{
                     last_name:"Sallim",
                     email:"bong2@mail.net",
                     address:"No.2 RedVille circle",
-                    phoneNumber:"0803737435",
+                    phone_number:"0803737435",
                     password:"Bongzooki7",
                     is_admin:"false"
                 })
