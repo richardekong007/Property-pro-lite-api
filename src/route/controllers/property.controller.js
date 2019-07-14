@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import Property from "../../entity/property.js";
 import cloudinary from "cloudinary";
 import Db from "../../db/db.js";
+import validator from "validator";
 import {validationResult} from "express-validator";
 import patchPropertyValidator from "../../../middleware/validators/patchPropertyValidator.js";
 
@@ -137,6 +138,18 @@ const deleteProperty = (req, res) =>{
             .then(result =>{
                 done();
                 if (!result || result.rowCount < 1) throw new Error("No record deleted");
+                let publicId;
+                const {image_url} = result.rows[0];
+                if (validator.isURL(image_url)){
+                    publicId = image_url.substring(
+                        image_url.lastIndexOf("/")+1,
+                        image_url.length
+                    );
+                    cloudinary.v2.uploader.destroy(publicId, (err, feedback) =>{
+                        if (err) console.log("Failed to delete",publicId);
+                        else if(feedback) console.log("Deleted ",publicId, " from cloud");
+                    });
+                }
                 res.status(200).json({
                     status:"success",
                     data:{message: "Operation successful"}
