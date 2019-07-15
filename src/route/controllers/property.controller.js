@@ -56,13 +56,13 @@ const insertProperty = (database, property, messageExchange) =>{
 };
 
 const postPropertyAdvert = (req, res) =>{
-    const validatorError = validationResult(req);
-    if (!validatorError.isEmpty()){
-        return res.status(422).json({
-            status: "error",
-            error: validatorError.array()
-        });
-    }
+    // const validatorError = validationResult(req);
+    // if (!validatorError.isEmpty()){
+    //     return res.status(422).json({
+    //         status: "error",
+    //         error: validatorError.array()
+    //     });
+    // }
     const messageExchange = {req:req, res:res};
     const property = createProperty(req.body);
     if (req.file){
