@@ -93,12 +93,7 @@ const prepareUpdateStatement = (table,reqestBody) =>{
 
 const updateProperty = (req, res) =>{
     const patchValidation = patchPropertyValidator(req.body);
-    if (parseInt(req.params.id) === "NaN" || !(Object.keys(req.body) < 1)){
-        return res.status(500).json({
-            status:"error",
-            error:"Wrong data"
-        });
-    }
+    
     console.log(req.body);
     if (!patchValidation.valid){
         console.log(patchValidation.error);
@@ -164,9 +159,9 @@ const markAsSold = (req, res) =>{
                 data:result.rows[0]
             });
         })
-        .catch(err => res.status(400).json({
-            status:"error", error:err.detail
-        }));
+        // .catch(err => res.status(400).json({
+        //     status:"error", error:err.detail
+        // }));
     })
 };
 
