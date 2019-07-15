@@ -209,10 +209,16 @@ const deleteProperty = (req, res) =>{
 }
 
 const findAllProperties = (req, res) =>{
-    console.log(`${req.method}/${req.originalUrl}`);
+    console.log(`${req.method}${req.originalUrl}`);
     const sqlStatement = "SELECT PROPERTY.id, PROPERTY.status, PROPERTY.type, PROPERTY.state, PROPERTY.city, PROPERTY.address, PROPERTY.price, PROPERTY.created_on, PROPERTY.image_url, USERS.email as owner_email, USERS.phone_number as owner_phone_number FROM USERS INNER JOIN PROPERTY ON USERS.id = PROPERTY.owner ORDER BY id ASC;";
     db.getConnectionPool().connect((err, client, done) =>{
         if (err) {
+            console.log(
+                res.status(500).json({
+                    status:"error", 
+                    error:"Server error"
+                })
+            );
             return res.status(500).json({
                 status:"error", 
                 error:"Server error"
@@ -222,15 +228,26 @@ const findAllProperties = (req, res) =>{
             .then(results => {
                     done();
                     if(!results || results.rowCount < 1){
+                        console.log(
+                            res.status(404).json({
+                                status:"success", 
+                                error:"No record found"
+                            }));
                         return res.status(404).json({
                             status:"success", 
                             error:"No record found"
                         });
                     } 
-                    res.status(200).json({
-                        status:"success",
-                        data:results.rows
-                });
+                    
+                    console.log(
+                        res.status(200).json({
+                            status:"success",
+                            data:results.rows
+                    }));
+                    return res.status(200).json({
+                            status:"success",
+                            data:results.rows
+                    });
             })
             .catch(err => res.status(404).json({
                 status:"error", error:err.detail
@@ -252,13 +269,14 @@ const findPropertyByType = (req, res) =>{
         client.query(sqlStatement,values)
             .then(results => {
                 done();
-                if (!results || results.rowCount < 1){
+                if (results.rowCount < 1){
                     return res.status(404).json({
-                        status:"error",
+                         status:"error",
                          error:"No Record!"
                         });
                 } 
-                res.status(200).json({
+            
+                return res.status(200).json({
                     status:"success",
                     data:results.rows
                 });
