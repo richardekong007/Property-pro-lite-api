@@ -60,6 +60,7 @@ const postPropertyAdvert = (req, res) =>{
     console.log("body:",req.body);
     console.log("\nauth header:", req.headers.authorization);
     if (!validatorError.isEmpty()){
+        console.log(validatorError.array());
         return res.status(422).json({
             status: "error",
             error: validatorError.array()
