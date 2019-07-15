@@ -221,7 +221,7 @@ const findAllProperties = (req, res) =>{
         client.query(sqlStatement)
             .then(results => {
                     done();
-                    if(!results || results.rowCount < 1){
+                    if(results.rowCount < 1){
                         return res.status(404).json({
                             status:"error", 
                             error:"No record found"
@@ -233,9 +233,9 @@ const findAllProperties = (req, res) =>{
                             data:results.rows
                     });
             })
-            // .catch(err => res.status(404).json({
-            //     status:"error", error:err.detail
-            // }));
+            .catch(err => res.status(404).json({
+                status:"error", error:err.detail
+            }));
     });
     
 };
