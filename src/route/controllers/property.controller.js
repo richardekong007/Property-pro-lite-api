@@ -93,7 +93,7 @@ const prepareUpdateStatement = (table,reqestBody) =>{
 
 const updateProperty = (req, res) =>{
     const patchValidation = patchPropertyValidator(req.body);
-    if (typeof req.params.id !== "number"){
+    if (parseInt(req.params.id) === "NaN"){
         return res.status(500).json({
             status:"error",
             error:"Wrong data"
@@ -137,7 +137,7 @@ const markAsSold = (req, res) =>{
 
     const sqlStatement = "UPDATE PROPERTY SET status = $1 WHERE id = $2 RETURNING id, status, type, state, city, address, price, created_on, image_url;"
     const values = [req.params.sold, parseInt(req.params.id)];
-    if ((req.params.sold !== "sold") && (typeof req.params.id !== "number")){
+    if ((req.params.sold !== "sold") && (parseInt(req.params.id) === "NaN")){
             return res.status(500).json({
                 status:"error", 
                 error:"Wrong data!"
