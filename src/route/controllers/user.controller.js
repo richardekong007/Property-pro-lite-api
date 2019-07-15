@@ -20,6 +20,7 @@ const createUser = (requestBody) =>{
 const signupUser = (req, res) =>{
     const validationError = validationResult(req);
     if (!validationError.isEmpty()){
+        console.log(req.body);
         return res.status(422).json({
             status:"Error",
             error:validationError.array()
