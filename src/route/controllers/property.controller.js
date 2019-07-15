@@ -165,7 +165,12 @@ const deleteProperty = (req, res) =>{
         client.query(sqlStatement, values)
             .then(result =>{
                 done();
-                if (!result || result.rowCount < 1) throw new Error("No record deleted");
+                if (!result || result.rowCount < 1) {
+                    return res.status(400).json({
+                        status:"error",
+                        error:"No record deleted!"
+                    })
+                }
                 let publicId;
                 const {image_url} = result.rows[0];
                 if (validator.isURL(image_url)){
@@ -203,7 +208,7 @@ const findAllProperties = (req, res) =>{
             .then(results => {
                     done();
                     if(!results || results.rowCount < 1){
-                        res.status(404).json({
+                        return res.status(404).json({
                             status:"success", 
                             error:"No record found"
                         });
@@ -234,7 +239,7 @@ const findPropertyByType = (req, res) =>{
             .then(results => {
                 done();
                 if (!results || results.rowCount < 1){
-                    res.status(404).json({
+                    return res.status(404).json({
                         status:"error",
                          error:"No Record!"
                         });
@@ -257,19 +262,19 @@ const findPropertyById = (req, res) => {
     const values = [parseInt(req.params.id)];
     db.getConnectionPool().connect((err, client, done) =>{
         if (err) {
-            res.status(500).json({
-                status:"error",
-                error:"Server error"
-            });
+                return res.status(500).json({
+                    status:"error",
+                    error:"Server error"
+                });
         }
         client.query(sqlStatement, values)
             .then(results => {
                 done();
                 if (results.rowCount < 1) throw new Error("No record found");
-                res.status(200).json({
-                    status:"success",
-                    data:results.rows[0]
-                });
+                    return res.status(200).json({
+                        status:"success",
+                        data:results.rows[0]
+                    });
             })
             .catch(err=> res.status(404).json({
                 status:"error", error:err.detail
