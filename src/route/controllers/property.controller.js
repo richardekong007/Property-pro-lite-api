@@ -93,6 +93,12 @@ const prepareUpdateStatement = (table,reqestBody) =>{
 
 const updateProperty = (req, res) =>{
     const patchValidation = patchPropertyValidator(req.body);
+    if (typeof req.params.id !== "number"){
+        return res.status(500).json({
+            status:"error",
+            error:"Wrong data"
+        });
+    }
     console.log(req.body);
     if (!patchValidation.valid){
         console.log(patchValidation.error);
@@ -131,6 +137,12 @@ const markAsSold = (req, res) =>{
 
     const sqlStatement = "UPDATE PROPERTY SET status = $1 WHERE id = $2 RETURNING id, status, type, state, city, address, price, created_on, image_url;"
     const values = [req.params.sold, parseInt(req.params.id)];
+    if ((req.params.sold !== "sold") && (typeof req.params.id !== "number")){
+            return res.status(500).json({
+                status:"error", 
+                error:"Wrong data!"
+            });
+    }
     db.getConnectionPool().connect((err, client, done) =>{
         if (err) {
             return res.status(500).json({
@@ -141,6 +153,12 @@ const markAsSold = (req, res) =>{
         client.query(sqlStatement, values)
         .then(result => {
             done();
+            if (result.rowCount < 1){
+                return res.status(400).json({
+                    status:"error",
+                    error:"No record updated!"
+                });
+            }
             res.status(200).json({
                 status:"success",
                 data:result.rows[0]
