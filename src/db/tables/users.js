@@ -13,7 +13,7 @@ const statements = [
         `password VARCHAR(100) NOT NULL,`,
         `phone_number VARCHAR(12) NOT NULL,`,
         `address VARCHAR(60) NOT NULL,`,
-        `is_admin BOOLEAN NOT NULL);`,
+        `is_admin BOOLEAN );`,
         `ALTER TABLE IF EXISTS USERS OWNER TO ${tableUser};`
 ];
 

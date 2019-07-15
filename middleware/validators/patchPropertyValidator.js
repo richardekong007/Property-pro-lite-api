@@ -6,6 +6,7 @@ const patchPropertyValidator = (requestBody) =>{
     let errors = [];
     Object.keys(requestBody).forEach(key =>{
         switch(key){
+            case 'token':
             case 'id':
                 delete requestBody[key];
                 break;

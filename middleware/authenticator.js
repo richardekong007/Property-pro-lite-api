@@ -6,6 +6,7 @@ class Authenticator{
     static authenticate(req, res, next){
         try{
             const token = process.env.TEMP_TOKEN;
+            req.body.token = token;
             req.decodedToken = jwt.verify(token, process.env.JWT_SECRET);
             next();
         }catch(error){

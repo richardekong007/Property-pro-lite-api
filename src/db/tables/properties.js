@@ -8,7 +8,7 @@ const statements = [
     `CREATE TABLE IF NOT EXISTS PROPERTY(`,
     `id SERIAL PRIMARY KEY,`,
     `owner INTEGER NOT NULL,`,
-    `status VARCHAR(30) NOT NULL,`,
+    `status VARCHAR(30) NOT NULL DEFAULT 'available',`,
     `price FLOAT NOT NULL,`,
     `state VARCHAR(30) NOT NULL,`,
     `city VARCHAR(30) NOT NULL,`,
