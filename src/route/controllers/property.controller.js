@@ -114,6 +114,12 @@ const updateProperty = (req, res) =>{
         client.query(sqlStatement, values)
         .then((result)=>{
             done();
+            if (result.rowCount < 1){
+                return res.status(400).json({
+                    status:"error",
+                    error:"No updates made"
+                })
+            }
             res.status(200).json({status:"success", data:result.rows[0]})
         })
         .catch((err)=> res.status(400).json({status:"error", error:err.detail}));
