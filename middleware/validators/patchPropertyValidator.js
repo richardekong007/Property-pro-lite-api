@@ -7,6 +7,7 @@ const patchPropertyValidator = (requestBody) =>{
     Object.keys(requestBody).forEach(key =>{
         switch(key){
             case 'token':
+            case 'Authorization':
             case 'id':
                 delete requestBody[key];
                 break;
