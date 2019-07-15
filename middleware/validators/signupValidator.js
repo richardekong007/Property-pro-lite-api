@@ -22,10 +22,6 @@ const signupValidator = [
     .withMessage("Password must contain atleast one uppercase, lowercase string , and a number")
     .isLength({min:7}).withMessage("password length must be greater than 6")
     .escape(),
-
-    check("is_admin").not().isEmpty().withMessage("Are you an admin or not?")
-    .isBoolean().withMessage("provide either true or false")
-
 ];
 
 export default signupValidator;

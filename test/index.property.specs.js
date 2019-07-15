@@ -18,7 +18,6 @@ chai.use(chaiAsPromised);
 const createProperty = () =>{
     const property = new Property.Builder()
                         .setOwner(1)
-                        .setStatus('Available')
                         .setPrice(50000.00)
                         .setState('GA')
                         .setCity('Austel')
@@ -32,20 +31,22 @@ const createProperty = () =>{
 
 describe("api.v1 routes: Property", () =>{
     const property = createProperty();
-    const {owner,status,price,state,city,address,type,created_on,image_url} = property;
-    const values = [owner,status,price,state,city,address,type,created_on,image_url];
-    const sqlStatement = "INSERT INTO PROPERTY(owner,status,price,state,city,address,type,created_on,image_url) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *;";
+    const {owner,price,state,city,address,type,created_on,image_url} = property;
+    const values = [owner,price,state,city,address,type,created_on,image_url];
+    const sqlStatement = "INSERT INTO PROPERTY(owner,price,state,city,address,type,created_on,image_url) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *;";
     before(() =>{
         return db.getConnectionPool()
-                 .connect((err, client, done) =>{
+                 .connect((err, client, cb) =>{
                     if (err) throw err;
                         client.query(sqlStatement, values)
                            .then(result => {
-                                done();
+                                cb();
                                 property.id = result.rows[0].id;
+                                console.log(result.rows[0]);
                            })
                            .catch(err => console.log(err));
                     });
+        
     });
 
     describe("POST/property", () =>{
@@ -53,8 +54,7 @@ describe("api.v1 routes: Property", () =>{
                 return chai.request(app)
                 .post("/property")
                 .send({
-                    owner: "1",
-                    status: "available",
+                    owner: property.owner,
                     price: 60000,
                     state: "Niger",
                     city: "Pkico",

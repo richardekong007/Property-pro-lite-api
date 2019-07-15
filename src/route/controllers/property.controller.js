@@ -28,28 +28,29 @@ const createProperty = (requestBody) =>{
     return property;
 };
 
-const insertProperty = (database, property, response) =>{
-    const sqlStatement = "INSERT INTO PROPERTY(owner,status,price,state,city,address,type,created_on,image_url) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *;"
-    const {owner,status,price,state,city,address,type,created_on,image_url} = property;
-    const values = [owner,status,price,state,city,address,type,created_on,image_url];
+const insertProperty = (database, property, messageExchange) =>{
+    property.owner = messageExchange.req.decodedToken.id;
+    const sqlStatement = "INSERT INTO PROPERTY(owner,price,state,city,address,type,created_on,image_url) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *;"
+    const {owner,price,state,city,address,type,created_on,image_url} = property;
+    const values = [owner,price,state,city,address,type,created_on,image_url];
 
     database.query(sqlStatement, values)
             .then(result =>{
                 if (result.rowCount < 1){
-                    response.status(400)
+                    messageExchange.res.status(400)
                         .send({
                             status:"error",
-                            error:"No record updated!"
+                            error:"No record inserted!"
                         })
                 }
                 const {id,status,type,state,city,address,price,created_on,image_url} = result.rows[0];
                 const data = {id,status,type,state,city,address,price,created_on,image_url};
-                response.status(201).json({
+                messageExchange.res.status(201).json({
                     status:"success",
                     data:data
                 });
             })
-            .catch(err => response.status(412).json({
+            .catch(err => messageExchange.res.status(412).json({
                 status:"error", error:err.detail
             }));
 };
@@ -62,14 +63,15 @@ const postPropertyAdvert = (req, res) =>{
             error: validatorError.array()
         });
     }
+    const messageExchange = {req:req, res:res};
     const property = createProperty(req.body);
     if (req.file){
         cloudinary.v2.uploader.upload(req.file.path, (err, feedback) => {
             property.image_url = feedback.secure_url;
-            insertProperty(db, property,res);
+            insertProperty(db, property,messageExchange);
         });
     }else{
-        insertProperty(db,property,res);
+        insertProperty(db,property,messageExchange);
     }
 };
 
