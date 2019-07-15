@@ -223,7 +223,7 @@ const findAllProperties = (req, res) =>{
                     done();
                     if(!results || results.rowCount < 1){
                         return res.status(404).json({
-                            status:"success", 
+                            status:"error", 
                             error:"No record found"
                         });
                     } 
