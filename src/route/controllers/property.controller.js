@@ -95,6 +95,7 @@ const updateProperty = (req, res) =>{
     const patchValidation = patchPropertyValidator(req.body);
     console.log(req.body);
     if (!patchValidation.valid){
+        console.log(patchValidation.error);
         return res.status(422).json({
             status: "error",
             error: patchValidation.error
