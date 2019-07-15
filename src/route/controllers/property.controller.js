@@ -233,9 +233,9 @@ const findAllProperties = (req, res) =>{
                             data:results.rows
                     });
             })
-            .catch(err => res.status(404).json({
-                status:"error", error:err.detail
-            }));
+            // .catch(err => res.status(404).json({
+            //     status:"error", error:err.detail
+            // }));
     });
     
 };
