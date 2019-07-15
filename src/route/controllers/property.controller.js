@@ -260,6 +260,12 @@ const findPropertyByType = (req, res) =>{
 const findPropertyById = (req, res) => {
     const sqlStatement = "SELECT PROPERTY.id, PROPERTY.status, PROPERTY.type, PROPERTY.state, PROPERTY.city, PROPERTY.address, PROPERTY.price, PROPERTY.created_on, PROPERTY.image_url, USERS.email as owner_email, USERS.phone_number as owner_phone_number FROM USERS INNER JOIN PROPERTY ON USERS.id = PROPERTY.owner WHERE PROPERTY.id = $1;";
     const values = [parseInt(req.params.id)];
+    if (!req.params.id){
+        return res.status(500).json({
+            status:"error",
+            error:"server error"
+        });
+    }
     db.getConnectionPool().connect((err, client, done) =>{
         if (err) {
                 return res.status(500).json({
@@ -270,7 +276,12 @@ const findPropertyById = (req, res) => {
         client.query(sqlStatement, values)
             .then(results => {
                 done();
-                if (results.rowCount < 1) throw new Error("No record found");
+                if (results.rowCount < 1){
+                    return res.status(404).json({
+                        status:"error",
+                        error:"No record found"
+                    });
+                } 
                     return res.status(200).json({
                         status:"success",
                         data:results.rows[0]
