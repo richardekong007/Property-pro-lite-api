@@ -37,8 +37,8 @@ const insertProperty = (database, property, messageExchange) =>{
     database.query(sqlStatement, values)
             .then(result =>{
                 if (result.rowCount < 1){
-                    messageExchange.res.status(400)
-                        .send({
+                    return messageExchange.res.status(404)
+                        .json({
                             status:"error",
                             error:"No record inserted!"
                         })

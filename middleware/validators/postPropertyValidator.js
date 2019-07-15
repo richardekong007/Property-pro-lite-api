@@ -17,7 +17,7 @@ const postPropertyValidator = [
         .trim().escape(),
 
     check("address").exists().isString().custom((value,{req})=>{
-            const expected = req.body.address;
+            const expected = value;
             return expected.replace(/\s/g,'').length > 0;
         }).withMessage("Provide a valid address").escape(),
 
@@ -25,12 +25,11 @@ const postPropertyValidator = [
         const expected = value;
         return expected.replace(/\s/g,'').length > 0;
     }).withMessage("Provide a valid propert's type")
-        //.isAlphanumeric().withMessage("This value must be alphabetic")
+        .isAlphanumeric().withMessage("This value must be alphabetic")
         .isLength({min:2}).withMessage("value length must be greater than one")
         .trim().escape(),
     
-    check("price").not().isEmpty().withMessage("Provide the property's price")
-        .isFloat().escape()
+    check("price").not().isEmpty().withMessage("Provide the property's price").escape()
 ];
 
 
