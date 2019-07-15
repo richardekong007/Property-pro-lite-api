@@ -50,9 +50,9 @@ const insertProperty = (database, property, messageExchange) =>{
                     data:data
                 });
             })
-            .catch(err => messageExchange.res.status(412).json({
-                status:"error", error:err.detail
-            }));
+            // .catch(err => messageExchange.res.status(412).json({
+            //     status:"error", error:err.detail
+            // }));
 };
 
 const postPropertyAdvert = (req, res) =>{
@@ -63,7 +63,7 @@ const postPropertyAdvert = (req, res) =>{
         console.log(validatorError.array());
         return res.status(422).json({
             status: "error",
-            error: validatorError.array()
+            error: validatorError.array().join(' ')
         });
     }
     const messageExchange = {req:req, res:res};
