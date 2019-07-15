@@ -25,7 +25,7 @@ const postPropertyValidator = [
         const expected = value;
         return expected.replace(/\s/g,'').length > 0;
     }).withMessage("Provide a valid propert's type")
-        .isAlphanumeric().withMessage("This value must be alphabetic")
+        // .isAlphanumeric().withMessage("This value must be alphabetic")
         .isLength({min:2}).withMessage("value length must be greater than one")
         .trim().escape(),
     
