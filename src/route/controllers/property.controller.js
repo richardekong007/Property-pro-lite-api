@@ -58,7 +58,7 @@ const insertProperty = (database, property, messageExchange) =>{
 const postPropertyAdvert = (req, res) =>{
     const validatorError = validationResult(req);
     console.log("body:",req.body);
-    console.log("\nauth header:", req.header.authorization);
+    console.log("\nauth header:", req.headers.authorization);
     if (!validatorError.isEmpty()){
         return res.status(422).json({
             status: "error",
