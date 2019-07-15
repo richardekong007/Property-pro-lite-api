@@ -21,7 +21,7 @@ const postPropertyValidator = [
             return expected.replace(/\s/g,'').length > 0;
         }).withMessage("Provide a valid address").escape(),
 
-    check("type").isString().custom((value,{req})=>{
+    check("type").exists().isString().custom((value,{req})=>{
         const expected = value;
         return expected.replace(/\s/g,'').length > 0;
     }).withMessage("Provide a valid propert's type")
