@@ -93,7 +93,7 @@ const prepareUpdateStatement = (table,reqestBody) =>{
 
 const updateProperty = (req, res) =>{
     const patchValidation = patchPropertyValidator(req.body);
-    if (parseInt(req.params.id) === "NaN"){
+    if (parseInt(req.params.id) === "NaN" || !(req.body)){
         return res.status(500).json({
             status:"error",
             error:"Wrong data"
