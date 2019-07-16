@@ -131,10 +131,11 @@ const updateProperty = (req, res) =>{
 
 const markAsSold = (req, res) =>{
     console.log(req.params);
+    console.log(req.body);
     const sqlStatement = "UPDATE PROPERTY SET status = $1 WHERE id = $2 RETURNING id, status, type, state, city, address, price, created_on, image_url;"
     const {sold, id} = req.params;
     const values = [sold, id];
-    if ((sold !== "sold") || !validator.isNumeric(id)){
+    if ((sold !== "sold")){
             return res.status(400).json({
                 status:"error", 
                 error:"Wrong request!"
@@ -157,7 +158,8 @@ const markAsSold = (req, res) =>{
                     error:"No record updated!"
                 });
             }
-            res.status(200).json({
+
+            return res.status(200).json({
                 status:"success",
                 data:result.rows[0]
             });
