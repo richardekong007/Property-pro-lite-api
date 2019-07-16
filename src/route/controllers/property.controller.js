@@ -162,6 +162,7 @@ const markAsSold = (req, res) =>{
             if (result.rows[0].id === id){
                 client.query(sqlStatement, values)
                     .then(results =>{
+                        done();
                         if (results.rowCount < 1){
                             return res.status(400).json({
                                 status:"error",
