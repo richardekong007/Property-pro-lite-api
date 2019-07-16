@@ -128,43 +128,81 @@ const updateProperty = (req, res) =>{
 
 const markAsSold = (req, res) =>{
    
+    const sqlStatement0 = "SELECT owner FROM PROPERTY WHERE id = $1;"
     const sqlStatement = "UPDATE PROPERTY SET status = $1 WHERE id = $2 RETURNING id, status, type, state, city, address, price, created_on, image_url;"
     const {sold, id} = req.params;
     const values = [sold, id];
-    
-    if ((sold !== "sold")){
-            return res.status(400).json({
-                status:"error", 
-                error:"Wrong request!"
-            });
-    }
 
-    db.getConnectionPool().connect((err, client, done) =>{
-        if (err) {
-            return res.status(500).json({
-                status:"error", 
-                error:"Server error"
-            });
+    db.getConnectionPool().connect((err, client, releaseClient) =>{
+        if (err){
+            return res.status(500).json({status:"error", error:"Server error!"});
         }
-        client.query(sqlStatement, values)
-        .then(result => {
-            done();
-            if (result.rowCount < 1){
-                return res.status(400).json({
-                    status:"error",
-                    error:"No record updated!"
-                });
+        client.query('BEGIN', err =>{
+            if (err) {
+                return res.status(500).json({status:"error", error:"Server error!"});
             }
+            client.query(sqlStatement0, [id])
+            .then(result =>{
+                releaseClient();
+                if (result.rowCount < 1){
+                    return res.status(404).json({status:"error", error:"Not found!"});
+                }
+                const owner = result.rows[0].owner;
+                if (owner === req.decodedToken.id){
 
-            return res.status(200).json({
-                status:"success",
-                data:result.rows[0]
-            });
-        })
-        .catch(err => res.status(400).json({
-            status:"error", error:err
-        }));
-    })
+                    client.query(sqlStatement, values).then(results =>{
+                        releaseClient();
+                        if (results.rowCount < 1){
+                            return res.status(404).json({status:"error", error:"Not found!"});
+                        }
+                        client.query('COMMIT', (err) =>{
+                            if (!err){
+                                return res.status(500).json({status:"error", error:"Server error!"});
+                            }
+                        });
+                        return res.status(200).json({status:"success", data:results.rows[0]});
+                    })
+                    .catch(err =>res.status(400).json({status:"error", error:err}));
+                }
+            })
+            .catch(err => res.status(400).json({status:"error", error:err}));
+        });
+    });
+
+    
+    // if ((sold !== "sold")){
+    //         return res.status(400).json({
+    //             status:"error", 
+    //             error:"Wrong request!"
+    //         });
+    // }
+
+    // db.getConnectionPool().connect((err, client, done) =>{
+    //     if (err) {
+    //         return res.status(500).json({
+    //             status:"error", 
+    //             error:"Server error"
+    //         });
+    //     }
+    //     client.query(sqlStatement, values)
+    //     .then(result => {
+    //         done();
+    //         if (result.rowCount < 1){
+    //             return res.status(400).json({
+    //                 status:"error",
+    //                 error:"No record updated!"
+    //             });
+    //         }
+
+    //         return res.status(200).json({
+    //             status:"success",
+    //             data:result.rows[0]
+    //         });
+    //     })
+    //     .catch(err => res.status(400).json({
+    //         status:"error", error:err
+    //     }));
+    // })
 };
 
 const deleteProperty = (req, res) =>{
