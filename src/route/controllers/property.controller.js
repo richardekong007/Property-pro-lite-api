@@ -94,12 +94,18 @@ const prepareUpdateStatement = (table,reqestBody) =>{
 
 const updateProperty = (req, res) =>{
 
-    if (!req.body || typeof req.body.price !== 'number' || parseInt(req.params.id) === 'NaN' ){
-        return res.status(400).json({status:"error", error:"Wrong Input!"});
+    if (!req.body || typeof req.body.price !== 'number' 
+                  || parseInt(req.params.id) === 'NaN' ){
+        return res.status(400).json({
+            status:"error", 
+            error:"Wrong Input!"
+        });
     }
+
     const sqlStatement = 'UPDATE PROPERTY SET price = $1 WHERE id = $2 RETURNING id, status, type, state, city, address, price, created_on, image_url;'
     const {price} = req.body;
     const values = [price, parseInt(req.params.id)];
+    
     db.getConnectionPool().connect((err, client, done)=>{
         if (err) {
             return res.status(500).json({
@@ -124,15 +130,16 @@ const updateProperty = (req, res) =>{
 };
 
 const markAsSold = (req, res) =>{
-
+    console.log(req.params);
     const sqlStatement = "UPDATE PROPERTY SET status = $1 WHERE id = $2 RETURNING id, status, type, state, city, address, price, created_on, image_url;"
     const values = [req.params.sold, parseInt(req.params.id)];
-    if ((req.params.sold !== "sold") || !(parseInt(req.params.id))){
-            return res.status(500).json({
+    if ((req.params.sold !== "sold")||(typeof (req.params.id) !== "number")){
+            return res.status(400).json({
                 status:"error", 
-                error:"Wrong data!"
+                error:"Wrong request!"
             });
     }
+
     db.getConnectionPool().connect((err, client, done) =>{
         if (err) {
             return res.status(500).json({
@@ -154,9 +161,9 @@ const markAsSold = (req, res) =>{
                 data:result.rows[0]
             });
         })
-        // .catch(err => res.status(400).json({
-        //     status:"error", error:err.detail
-        // }));
+        .catch(err => res.status(400).json({
+            status:"error", error:err
+        }));
     })
 };
 
