@@ -149,7 +149,7 @@ const markAsSold = (req, res) =>{
             if (result.rowCount < 1){
                 return res.status(400).json({status:"error", error:"No record updated!"});
             }
-            console.log("Owner:", result.rows[0].owner);
+            console.log("Owner:", result.rows[0].owner,"\ndecoded token id:",req.decodedToken.id);
             return res.status(200).json({status:"success", data:result.rows[0]});
         })
         .catch(err => res.status(400).json({status:"error", error:err}));
