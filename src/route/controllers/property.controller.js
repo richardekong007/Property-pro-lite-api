@@ -159,6 +159,8 @@ const markAsSold = (req, res) =>{
                 });
             }
 
+            console.log(result.rows[0]);
+
             return res.status(200).json({
                 status:"success",
                 data:result.rows[0]
@@ -216,10 +218,6 @@ const deleteProperty = (req, res) =>{
 
 const findAllProperties = (req, res) =>{
     
-    if (!(req.hostname )|| !(req.originalUrl) || !(req.path) ){
-        return res.status(400).json({status:"error", error:"Wrong Url!"});
-    }
-
     const sqlStatement = "SELECT PROPERTY.id, PROPERTY.status, PROPERTY.type, PROPERTY.state, PROPERTY.city, PROPERTY.address, PROPERTY.price, PROPERTY.created_on, PROPERTY.image_url, USERS.email as owner_email, USERS.phone_number as owner_phone_number FROM USERS INNER JOIN PROPERTY ON USERS.id = PROPERTY.owner ORDER BY id ASC;";
     db.getConnectionPool().connect((err, client, done) =>{
         if (err) {
