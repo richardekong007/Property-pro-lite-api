@@ -129,10 +129,14 @@ const updateProperty = (req, res) =>{
 const markAsSold = (req, res) =>{
     console.log(req.params);
     console.log(req.body);
+    const sqlStatement0 = "SELECT owner from PROPERTY WHERE id = $;";
     const sqlStatement = "UPDATE PROPERTY SET status = $1 WHERE id = $2 RETURNING id, status, type, state, city, address, price, created_on, image_url;"
     const {sold, id} = req.params;
     const values = [sold, id];
-    if ((sold !== "sold")){
+    let owner;
+    db.query(sqlStatement0, [id]).then(result =>{ owner = result.rows[0].owner});
+    console.log("Owner:", owner);
+    if ((sold !== "sold" || owner !== req.decodedToken.id)){
             return res.status(400).json({
                 status:"error", 
                 error:"Wrong request!"
