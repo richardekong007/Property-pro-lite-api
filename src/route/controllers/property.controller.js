@@ -127,16 +127,12 @@ const updateProperty = (req, res) =>{
 };
 
 const markAsSold = (req, res) =>{
-    console.log(req.params);
-    console.log(req.body);
-    const sqlStatement0 = "SELECT owner from PROPERTY WHERE id = $;";
+   
     const sqlStatement = "UPDATE PROPERTY SET status = $1 WHERE id = $2 RETURNING id, status, type, state, city, address, price, created_on, image_url;"
     const {sold, id} = req.params;
     const values = [sold, id];
-    let owner;
-    db.query(sqlStatement0, [id]).then(result =>{ owner = result.rows[0].owner});
-    console.log("Owner:", owner);
-    if ((sold !== "sold" || owner !== req.decodedToken.id)){
+    
+    if ((sold !== "sold")){
             return res.status(400).json({
                 status:"error", 
                 error:"Wrong request!"
@@ -159,8 +155,6 @@ const markAsSold = (req, res) =>{
                     error:"No record updated!"
                 });
             }
-
-            console.log(result.rows[0]);
 
             return res.status(200).json({
                 status:"success",
