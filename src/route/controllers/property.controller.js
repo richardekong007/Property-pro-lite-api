@@ -50,18 +50,15 @@ const insertProperty = (database, property, messageExchange) =>{
                     status:"success",
                     data:data
                 });
-            })
-            // .catch(err => messageExchange.res.status(412).json({
-            //     status:"error", error:err.detail
-            // }));
+            });
+            
 };
 
 const postPropertyAdvert = (req, res) =>{
+
     const validatorError = validationResult(req);
-    console.log("body:",req.body);
-    console.log("\nauth header:", req.headers.authorization);
+    
     if (!validatorError.isEmpty()){
-        console.log(validatorError.array());
         return res.status(422).json({
             status: "error",
             error: validatorError.array().join(' ')
@@ -83,7 +80,6 @@ const prepareUpdateStatement = (table,reqestBody) =>{
 
     let statement = [`UPDATE ${table} SET`];
     const keys = Object.keys(reqestBody);
-    console.log(reqestBody);
     keys.forEach((key,index) =>{
         statement.push(` ${key} = $${index+1}`);
         if ((index < keys.length-1)) statement.push(",");
@@ -113,6 +109,7 @@ const updateProperty = (req, res) =>{
                 error:"Server error"
             });
         }
+
         client.query(sqlStatement, values)
         .then((result)=>{
             done();
@@ -135,11 +132,14 @@ const markAsSold = (req, res) =>{
     const sqlStatement = "UPDATE PROPERTY SET status = $1 WHERE id = $2 RETURNING id, status, type, state, city, address, price, created_on, image_url;"
     const {sold, id} = req.params;
     const values = [sold, id];
-    if ((sold !== "sold")){
-            return res.status(400).json({
-                status:"error", 
-                error:"Wrong request!"
-            });
+    // if ((sold !== "sold")){
+    //         return res.status(400).json({
+    //             status:"error", 
+    //             error:"Wrong request!"
+    //         });
+    // }
+    if (req.decodedToken.id !== id){
+        return res.status(401).json({status:"error", error:"Operation Not allowed!"});
     }
 
     db.getConnectionPool().connect((err, client, done) =>{
@@ -173,6 +173,7 @@ const markAsSold = (req, res) =>{
 };
 
 const deleteProperty = (req, res) =>{
+
     const sqlStatement = "DELETE FROM PROPERTY WHERE id = $1 RETURNING *;";
     const values = [parseInt(req.params.id)];
     db.getConnectionPool().connect((err, client, done)=>{
@@ -214,7 +215,7 @@ const deleteProperty = (req, res) =>{
             }));
     });
 
-}
+};
 
 const findAllProperties = (req, res) =>{
     
@@ -249,6 +250,7 @@ const findAllProperties = (req, res) =>{
 };
 
 const findPropertyByType = (req, res) =>{
+
     const sqlStatement = "SELECT PROPERTY.id, PROPERTY.status, PROPERTY.type, PROPERTY.state, PROPERTY.city, PROPERTY.address, PROPERTY.price, PROPERTY.created_on, PROPERTY.image_url, USERS.email as owner_email, USERS.phone_number as owner_phone_number FROM USERS INNER JOIN PROPERTY ON USERS.id = PROPERTY.owner WHERE type = $1 ORDER BY id ASC;";
     const values = [req.query.type];
     db.getConnectionPool().connect((err, client, done) =>{
@@ -282,6 +284,7 @@ const findPropertyByType = (req, res) =>{
 };
 
 const findPropertyById = (req, res) => {
+
     const sqlStatement = "SELECT PROPERTY.id, PROPERTY.status, PROPERTY.type, PROPERTY.state, PROPERTY.city, PROPERTY.address, PROPERTY.price, PROPERTY.created_on, PROPERTY.image_url, USERS.email as owner_email, USERS.phone_number as owner_phone_number FROM USERS INNER JOIN PROPERTY ON USERS.id = PROPERTY.owner WHERE PROPERTY.id = $1;";
     const values = [parseInt(req.params.id)];
     if (!req.params.id){
