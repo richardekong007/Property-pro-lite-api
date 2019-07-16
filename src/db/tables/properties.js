@@ -12,8 +12,8 @@ const statements = [
     `price FLOAT NOT NULL,`,
     `state VARCHAR(30) NOT NULL,`,
     `city VARCHAR(30) NOT NULL,`,
-    `address VARCHAR(30) NOT NULL,`,
-    `type VARCHAR(30) NOT NULL,`,
+    `address VARCHAR(120) NOT NULL,`,
+    `type VARCHAR(60) NOT NULL,`,
     `created_on TIMESTAMPTZ NOT NULL,`,
     `image_url VARCHAR(120) NOT NULL );`,
 ];

@@ -18,13 +18,14 @@ const createUser = (requestBody) =>{
 };
 
 const signupUser = (req, res) =>{
-    const validationError = validationResult(req);
-    if (!validationError.isEmpty()){
-        return res.status(422).json({
-            status:"Error",
-            error:validationError.array()
-        });
-    }
+    // const validationError = validationResult(req);
+    // if (!validationError.isEmpty()){
+    //     console.log(req.body);
+    //     return res.status(422).json({
+    //         status:"Error",
+    //         error:validationError.array()
+    //     });
+    // }
     const saltRounds = 10;
     const user = createUser(req.body);
     const sqlStatement = "INSERT INTO USERS(email, first_name, last_name, password, phone_number, address) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *";
