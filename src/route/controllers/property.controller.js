@@ -133,7 +133,7 @@ const markAsSold = (req, res) =>{
     console.log(req.params);
     const sqlStatement = "UPDATE PROPERTY SET status = $1 WHERE id = $2 RETURNING id, status, type, state, city, address, price, created_on, image_url;"
     const values = [req.params.sold, parseInt(req.params.id)];
-    if ((req.params.sold !== "sold")||(typeof (req.params.id) !== "number")){
+    if ((req.params.sold !== "sold")||(parseInt(req.params.id) === "NaN")){
             return res.status(400).json({
                 status:"error", 
                 error:"Wrong request!"
