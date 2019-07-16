@@ -128,10 +128,10 @@ const updateProperty = (req, res) =>{
 
 const markAsSold = (req, res) =>{
    
-    const sqlStatement = "UPDATE PROPERTY SET status = $1 WHERE id = $2 RETURNING id, status, type, state, city, address, price, created_on, image_url;"
+    const sqlStatement = "UPDATE PROPERTY SET status = $1 WHERE id = $2 RETURNING id, owner, status, type, state, city, address, price, created_on, image_url;"
     const {sold, id} = req.params;
     const values = [sold, id];
-    
+
     if ((sold !== "sold")){
             return res.status(400).json({
                 status:"error", 
@@ -149,7 +149,7 @@ const markAsSold = (req, res) =>{
             if (result.rowCount < 1){
                 return res.status(400).json({status:"error", error:"No record updated!"});
             }
-
+            console.log("Owner:", result.rows[0].owner);
             return res.status(200).json({status:"success", data:result.rows[0]});
         })
         .catch(err => res.status(400).json({status:"error", error:err}));
