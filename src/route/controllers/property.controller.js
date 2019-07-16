@@ -128,9 +128,9 @@ const updateProperty = (req, res) =>{
 
 const markAsSold = (req, res) =>{
    
-    const sqlStatement = "UPDATE PROPERTY SET status = $1 WHERE id = $2 RETURNING id, owner, status, type, state, city, address, price, created_on, image_url;"
+    const sqlStatement = "UPDATE PROPERTY SET status = $1 WHERE id = $2 AND owner = $3 RETURNING id, status, type, state, city, address, price, created_on, image_url;"
     const {sold, id} = req.params;
-    const values = [sold, id];
+    const values = [sold, id, req.decodedToken.id];
 
     if ((sold !== "sold")){
             return res.status(400).json({
