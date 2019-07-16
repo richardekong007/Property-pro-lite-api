@@ -94,18 +94,12 @@ const prepareUpdateStatement = (table,reqestBody) =>{
 
 const updateProperty = (req, res) =>{
 
-    const patchValidation = patchPropertyValidator(req.body);
-    console.log(req.body);
-    if (!patchValidation.valid){
-        console.log(patchValidation);
-        return res.status(422).json({
-            status: "error",
-            error: patchValidation.error
-        });
+    if (!req.body || typeof req.body.price !== 'number' || parseInt(req.params.id) === 'NaN' ){
+        return res.status(400).json({status:"error", error:"Wrong Input!"});
     }
-    const table = "PROPERTY";
-    const sqlStatement = prepareUpdateStatement(table, req.body);
-    const values = [...Object.values(req.body), parseInt(req.params.id)];
+    const sqlStatement = 'UPDATE PROPERTY SET price = $1 WHERE id = $2 RETURNING id, status, type, state, city, address, price, created_on, image_url;'
+    const {price} = req.body;
+    const values = [price, parseInt(req.params.id)];
     db.getConnectionPool().connect((err, client, done)=>{
         if (err) {
             return res.status(500).json({
