@@ -138,6 +138,7 @@ const markAsSold = (req, res) =>{
     //             error:"Wrong request!"
     //         });
     // }
+    console.log (req.decodedToken.id,"=",id);
     if (req.decodedToken.id !== id){
         return res.status(401).json({status:"error", error:"Operation Not allowed!"});
     }
