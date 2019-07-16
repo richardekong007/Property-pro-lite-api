@@ -216,7 +216,7 @@ const deleteProperty = (req, res) =>{
 
 const findAllProperties = (req, res) =>{
     
-    if (!req.host || !req.originalUrl || !req.path || !req.body || ! req.token || !req.Authorization ){
+    if (!(req.hostname )|| !(req.originalUrl) || !(req.path) ){
         return res.status(400).json({status:"error", error:"Wrong Url!"});
     }
 
@@ -237,7 +237,7 @@ const findAllProperties = (req, res) =>{
                             error:"No record found"
                         });
                     } 
-                    
+                    console.log(results.rows);
                     return res.status(200).json({
                             status:"success",
                             data:results.rows
