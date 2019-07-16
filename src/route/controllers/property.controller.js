@@ -109,7 +109,7 @@ const updateProperty = (req, res) =>{
                 error:"Server error"
             });
         }
-
+        
         client.query(sqlStatement, values)
         .then((result)=>{
             done();
@@ -130,16 +130,14 @@ const markAsSold = (req, res) =>{
     console.log(req.params);
     console.log(req.body);
     const sqlStatement = "UPDATE PROPERTY SET status = $1 WHERE id = $2 RETURNING id, status, type, state, city, address, price, created_on, image_url;"
-    const sqlStatement2 = "SELECT PROPERTY.owner from PROPERTY WHERE id = $1;";
     const {sold, id} = req.params;
     const values = [sold, id];
-    const values2 = [id];
-    // if ((sold !== "sold")){
-    //         return res.status(400).json({
-    //             status:"error", 
-    //             error:"Wrong request!"
-    //         });
-    // }
+    if ((sold !== "sold")){
+            return res.status(400).json({
+                status:"error", 
+                error:"Wrong request!"
+            });
+    }
 
     db.getConnectionPool().connect((err, client, done) =>{
         if (err) {
@@ -148,8 +146,7 @@ const markAsSold = (req, res) =>{
                 error:"Server error"
             });
         }
-        
-        client.query(sqlStatement2, values2)
+        client.query(sqlStatement, values)
         .then(result => {
             done();
             if (result.rowCount < 1){
@@ -159,25 +156,12 @@ const markAsSold = (req, res) =>{
                 });
             }
 
-            if (result.rows[0].id === id){
-                client.query(sqlStatement, values)
-                    .then(results =>{
-                        done();
-                        if (results.rowCount < 1){
-                            return res.status(400).json({
-                                status:"error",
-                                error:"No record updated!"
-                            });
-                        }
-                        console.log(results.rows[0]);
-                        return res.status(200).json({
-                            status:"success",
-                            data:results.rows[0]
-                        });
-                    });
-            }
+            console.log(result.rows[0]);
 
-            
+            return res.status(200).json({
+                status:"success",
+                data:result.rows[0]
+            });
         })
         .catch(err => res.status(400).json({
             status:"error", error:err
