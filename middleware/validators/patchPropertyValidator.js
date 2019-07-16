@@ -18,8 +18,7 @@ const patchPropertyValidator = (requestBody) =>{
     keys.forEach(key =>{
         switch(key){
             case 'token':
-            case 'Authorization': 
-            case 'id':
+                delete requestBody[key];
                 break;
             case 'status':
                 valid = valid && (validator.equals(requestBody[key], "available")
