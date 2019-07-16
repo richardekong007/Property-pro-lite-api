@@ -4,12 +4,22 @@ const patchPropertyValidator = (requestBody) =>{
 
     let valid = true;
     let errors = [];
-    Object.keys(requestBody).forEach(key =>{
+    let error;
+    let response = {};
+    const keys = Object.keys(requestBody);
+
+    if (keys.length < 2){
+        error = 'No request!';
+        valid = false;
+        response = {valid:valid, error: error};
+        return response;
+    }
+    
+    keys.forEach(key =>{
         switch(key){
             case 'token':
-            case 'Authorization':
+            case 'Authorization': 
             case 'id':
-                delete requestBody[key];
                 break;
             case 'status':
                 valid = valid && (validator.equals(requestBody[key], "available")
@@ -46,7 +56,8 @@ const patchPropertyValidator = (requestBody) =>{
         }  
     });
     errors = errors.filter(error => error !== "undefined");
-    return {valid: valid, error:errors.join(", and ")};
-}
+    response = {valid: valid, error:errors.join(", and ")};
+    return response;
+};
 
 export default patchPropertyValidator;

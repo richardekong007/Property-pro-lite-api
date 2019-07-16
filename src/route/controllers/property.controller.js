@@ -1,3 +1,4 @@
+
 import dotenv from "dotenv";
 import Property from "../../entity/property.js";
 import cloudinary from "cloudinary";
@@ -92,11 +93,11 @@ const prepareUpdateStatement = (table,reqestBody) =>{
 };
 
 const updateProperty = (req, res) =>{
+
     const patchValidation = patchPropertyValidator(req.body);
-    
     console.log(req.body);
     if (!patchValidation.valid){
-        console.log(patchValidation.error);
+        console.log(patchValidation);
         return res.status(422).json({
             status: "error",
             error: patchValidation.error
@@ -119,7 +120,7 @@ const updateProperty = (req, res) =>{
                 return res.status(400).json({
                     status:"error",
                     error:"No updates made"
-                })
+                });
             }
             res.status(200).json({status:"success", data:result.rows[0]})
         })
@@ -196,6 +197,7 @@ const deleteProperty = (req, res) =>{
                         else if(feedback) console.log("Deleted ",publicId, " from cloud");
                     });
                 }
+
                 res.status(200).json({
                     status:"success",
                     data:{message: "Operation successful"}
@@ -303,7 +305,7 @@ const findPropertyById = (req, res) => {
                         data:results.rows[0]
                     });
             })
-            .catch(err=> res.status(404).json({
+            .catch(err => res.status(404).json({
                 status:"error", error:err.detail
             }));
     });
