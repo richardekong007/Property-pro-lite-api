@@ -3,11 +3,11 @@ import multer from "multer";
 import signupValidator from "../../middleware/validators/signupValidator.js";
 import signinValidator from "../../middleware/validators/signinValidator.js";
 import postPropertyValidator from "../../middleware/validators/postPropertyValidator.js";
-import {signupUser, signinUser} from "../route/controllers/user.controller.js";
+import {signupUser, signinUser} from "../controllers/user.js";
 import Authenticator from "../../middleware/authenticator.js";
 import {postPropertyAdvert, updateProperty, markAsSold, deleteProperty, findAllProperties,
-     findPropertyByType, findPropertyById} from "../route/controllers/property.controller.js";
-import flagProperty from "../route/controllers/flag.controller.js";
+     findPropertyByType, findPropertyById} from "../controllers/property.js";
+import flagProperty from "../controllers/flag.js";
 import postFlagValidator from "../../middleware/validators/postFlagValidator.js";
 
 const router = Router();

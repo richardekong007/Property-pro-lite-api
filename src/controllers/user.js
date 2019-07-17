@@ -1,7 +1,7 @@
-import User from "../../entity/user.js";
+import User from "../entity/user.js";
 import bcrypt from "bcrypt";
-import TokenGenerator from '../../tokenGenerator.js';
-import Db from "../../db/db.js";
+import TokenGenerator from '../tokenGenerator.js';
+import Db from "../db/db.js";
 import {validationResult} from "express-validator"; 
 
 const db = Db.getInstance();
