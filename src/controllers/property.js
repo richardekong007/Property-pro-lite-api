@@ -1,11 +1,11 @@
 
 import dotenv from "dotenv";
-import Property from "../../entity/property.js";
+import Property from "../entity/property.js";
 import cloudinary from "cloudinary";
-import Db from "../../db/db.js";
+import Db from "../db/db.js";
 import validator from "validator";
 import {validationResult} from "express-validator";
-import patchPropertyValidator from "../../../middleware/validators/patchPropertyValidator.js";
+import patchPropertyValidator from "../../middleware/validators/patchPropertyValidator.js";
 
 
 dotenv.config();

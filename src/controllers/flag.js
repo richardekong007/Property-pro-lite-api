@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
-import Flag from '../../entity/flag.js';
+import Flag from '../entity/flag.js';
 import {validationResult} from 'express-validator';
-import Db from '../../db/db.js';
+import Db from '../db/db.js';
 
 dotenv.config();
 
