@@ -11,6 +11,7 @@ const db = Db.getInstance();
 const expect = chai.expect;
 const responseBodyKeys = ["status","data"];
 const propertyDataKeys = ["id","status","price","state","address","type","created_on","image_url"];
+const errorkeys = ["status", "error"];
 chai.use(chaiHttp);
 chai.use(chaiAsPromised);
 
@@ -138,10 +139,15 @@ describe("api.v1 routes: Property", () =>{
                     })
                     .then(res =>{
                             expect(res).to.not.be.undefined;
-                            expect(res).to.have.status(200); 
-                            expect(res.body).to.include.keys(responseBodyKeys);
-                            expect(res.body.data).to.include.keys(propertyDataKeys);
-                            expect(res.body.data.price).to.eql(updatePrice);
+                            if (res.status > 399 && res.status <= 500){
+                                expect(res.body).to.include.keys(errorkeys);
+                                Object.values(res.body).forEach(val => expect(val).to.not.be.empty);
+                            }else if (res.status ===200){
+                                expect(res).to.have.status(200); 
+                                expect(res.body).to.include.keys(responseBodyKeys);
+                                expect(res.body.data).to.include.keys(propertyDataKeys);
+                                expect(res.body.data.price).to.eql(updatePrice);
+                            }
                     })
                     .catch(err => expect(err).to.be.rejected);
         });
@@ -155,10 +161,16 @@ describe("api.v1 routes: Property", () =>{
                     status:"sold"
                 })
                 .then(res => {
-                    expect(res).to.have.status(200)
-                    expect(res.body).to.include.keys(responseBodyKeys);
-                    expect(res.body.data).to.include.keys(propertyDataKeys);
-                    expect(res.body.data.status).to.eql("sold");
+                    expect(res).to.not.be.undefined;
+                    if (res.status > 399 && res.status <= 500){
+                        expect(res.body).to.include.keys(errorkeys);
+                        Object.values(res.body).forEach(val => expect(val).to.not.be.empty);
+                    }
+                    else if (res.status === 200){
+                        expect(res.body).to.include.keys(responseBodyKeys);
+                        expect(res.body.data).to.include.keys(propertyDataKeys);
+                        expect(res.body.data.status).to.eql("sold");
+                    } 
                 })
                 .catch(err => expect(err).to.be.rejected);
         });
@@ -171,9 +183,14 @@ describe("api.v1 routes: Property", () =>{
                 .delete(`/property/${property.id}`)
                 .then((res) =>{
                     expect(res).to.not.be.undefined;
-                    expect(res).to.have.status(200);
-                    expect(res.body).include.keys(responseBodyKeys);
-                    expect(res.body.data).to.have.property("message");
+                    if (res.status < 399 && res.status <= 500){
+                        expect(res.body).to.include.keys(errorkeys);
+                        Object.values(res.body).forEach(val => expect(val).to.not.be.empty);
+                    }else if (res.status === 200){
+                        expect(res).to.have.status(200);
+                        expect(res.body).include.keys(responseBodyKeys);
+                        expect(res.body.data).to.have.property("message");
+                    }
                 })
                 .catch((err) => expect(err).to.be.rejected);
         });

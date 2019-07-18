@@ -9,6 +9,7 @@ import {postPropertyAdvert, updateProperty, markAsSold, deleteProperty, findAllP
      findPropertyByType, findPropertyById} from "../controllers/property.js";
 import flagProperty from "../controllers/flag.js";
 import postFlagValidator from "../../middleware/validators/postFlagValidator.js";
+import grantOrDeny from "../../middleware/permission.js";
 
 const router = Router();
 
@@ -47,11 +48,11 @@ router.get("/property/type", Authenticator.authenticate,findPropertyByType);
 
 router.get("/property/:id", Authenticator.authenticate,findPropertyById);
 
-router.patch("/property/:id", Authenticator.authenticate, updateProperty);
+router.patch("/property/:id", Authenticator.authenticate, grantOrDeny, updateProperty);
 
-router.patch(`/property/:id/:${"sold"}`, Authenticator.authenticate, markAsSold);
+router.patch(`/property/:id/:${"sold"}`, Authenticator.authenticate, grantOrDeny, markAsSold);
 
-router.delete("/property/:id", Authenticator.authenticate,deleteProperty);
+router.delete("/property/:id", Authenticator.authenticate, grantOrDeny, deleteProperty);
 
 router.post("/flag", Authenticator.authenticate, postFlagValidator, flagProperty);
 
