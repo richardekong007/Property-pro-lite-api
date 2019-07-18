@@ -10,7 +10,7 @@ const grantOrDeny = (req, res, next) =>{
             .connect((err, client, releaseClient) =>{
                 if (err) {
                     return res.status(500).json({
-                        status:"success",
+                        status:"error",
                         error:"Server error!"
                     });
                 }
@@ -39,8 +39,7 @@ const grantOrDeny = (req, res, next) =>{
                             status:"error",
                             error:err.stack
                         });
-                    })
-                    .then(() => db.getConnectionPool().end());
+                    });
             });
             
 };
