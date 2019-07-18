@@ -5,8 +5,8 @@ const grantOrDeny = (req, res, next) =>{
 
     const sqlStatment = 'SELECT owner FROM PROPERTY WHERE id = $1;';
     const values = [parseInt(req.params.id)];
-    Db.getInstance()
-        .getConnectionPool()
+    const db = Db.getInstance()
+        db.getConnectionPool()
             .connect((err, client, releaseClient) =>{
                 if (err) {
                     return res.status(500).json({
@@ -39,8 +39,10 @@ const grantOrDeny = (req, res, next) =>{
                             status:"error",
                             error:err.stack
                         });
-                    });
+                    })
+                    .then(() => db.getConnectionPool().end());
             });
+            
 };
 
 export default grantOrDeny;
