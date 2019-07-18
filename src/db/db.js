@@ -21,7 +21,11 @@ class Db {
     }
 
     static getInstance (){
-        return new Db();
+        
+        if (!this.instance){
+            this.instance = new Db();
+        }
+        return this.instance;
     }
 
     createTable (queryText){
