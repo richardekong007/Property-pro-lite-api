@@ -183,7 +183,7 @@ describe("api.v1 routes: Property", () =>{
                 .delete(`/property/${property.id}`)
                 .then((res) =>{
                     expect(res).to.not.be.undefined;
-                    if (res.status < 399 && res.status <= 500){
+                    if (res.status > 399 && res.status <= 500){
                         expect(res.body).to.include.keys(errorkeys);
                         Object.values(res.body).forEach(val => expect(val).to.not.be.empty);
                     }else if (res.status === 200){
