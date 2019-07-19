@@ -5,9 +5,11 @@ An API to power front-end pages of property pro lite web application.
 [![Coverage Status](https://coveralls.io/repos/github/richardekong007/Property-pro-lite-api/badge.svg?branch=develop)](https://coveralls.io/github/richardekong007/Property-pro-lite-api?branch=develop)
 
 **Environment variables**
+
 Create a file at the project's root directory to store all environment variables. The name of this file should be '.env'. Then add the following variables to the file above.
 
 **Cloudinary Image credential**
+
 - CLOUDINARY_CLOUD_NAME = dcfenmfzt
 - CLOUDINARY_API_KEY = 731441416642847
 - CLOUDINARY_API_SECRET = xwPkswb14Vx6kR1PkOe2ev-kcdA
