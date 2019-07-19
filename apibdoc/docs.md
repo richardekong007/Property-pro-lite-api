@@ -114,31 +114,23 @@ This page presents all routes and resource available in this Application Program
 # Data Structures
 
 ## User (object)
-- id: `1` (number) - This denotes the ID of the User
 - email: `king@mail.net` (string) - This denotes the email of the user
 - first_name: `King` (string) - This denotes the first name of the User
 - last_name: `James` (string) - This denotes the last name of the user
 - password: `@%%^$#&` (string) - This denotes the password of the user
 - phone_number: `08034734638` (string) - This denotes the phone number of the user
 - address: `No.5 Main Street` (string) - This denotes the address of the user
-- is_admin: true (boolean) - This denotes whether the user is an admin, capable posting property adverts
 
 ## Property (object)
-- id: `1` (number) - This denotes the ID of the property
-- owner: `1` (number) - This denotes the ID of the owner
-- status: `available` (string) - This denotes that this property is available
 - price: `60000` (number) - This denotes the price of this property
 - state: `Abuja` (string) - This denotes the state or region in which this property is situated
 - city: `Gwagwalada` (string) - This denotes the city in which this property is situated
 - address: `No.45 Main Street, Agota` (string) - This denotes the address of the property
 - type: `Duplex` (string) - This denotes the property category
-- created_on: `2019-07-02T11:45:45.542Z` (string) - This denotes the date of property advert
 - image_url: `https:https://res.cloudinary.com/uerterer/image/upload/v13847477/4387394749349vhf.png` (string) - This denotes the url to this property's image
 
 ## Flag (object)
-- id:`1` (number) - This denotes the ID of the flag
 - property_id: `1` (number) - This denotes the ID of the property being flagged/reported
-- created_on: `2019-07-02T11:45:45.542Z` (string) - This denotes the date on which the flag was initiated
 - reason: `Security` (string) - This denotes the reason for flagging/reporting a property Ad
 - description: `Regional crisis` - A brief description of reason 
 
