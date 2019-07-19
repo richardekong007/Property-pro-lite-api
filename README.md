@@ -78,8 +78,9 @@ API Documentation can be found [here](https://property-pro-lite-api.herokuapp.co
 - POST/api/v1/flag
     - Request
     {
-        token:String, 
-        price:String
+        property_id:  Integer,
+        reason: String,
+        description: string
     }
 
 - GET/api/v1/property
@@ -95,7 +96,8 @@ API Documentation can be found [here](https://property-pro-lite-api.herokuapp.co
 - PATCH/api/v1/property/{id}
     - Request
         {
-            token:String
+            token:String,
+            price: Float
         }
 
 - PATCH/api/v1/property/{id}/sold
