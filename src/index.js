@@ -7,7 +7,7 @@ const app = express();
 app.set('port', process.env.PORT || 3999);
 app.set('json spaces', 4);
 app.use(cors({
-    origin:["http://localhost:4000"],
+    origin:"*",
     methods:["GET","POST","PATCH","DELETE"],
     allowedHeaders:["Content-Type","Authorization"]
 }));
