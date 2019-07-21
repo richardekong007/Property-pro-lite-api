@@ -5,7 +5,6 @@ import cloudinary from "cloudinary";
 import Db from "../db/db.js";
 import validator from "validator";
 import {validationResult} from "express-validator";
-import patchPropertyValidator from "../../middleware/validators/patchPropertyValidator.js";
 
 
 dotenv.config();
@@ -61,7 +60,7 @@ const postPropertyAdvert = (req, res) =>{
     if (!validatorError.isEmpty()){
         return res.status(422).json({
             status: "error",
-            error: validatorError.array().join(' ')
+            error: validatorError.array()[0].msg
         });
     }
     const messageExchange = {req:req, res:res};
@@ -74,18 +73,6 @@ const postPropertyAdvert = (req, res) =>{
     }else{
         insertProperty(db,property,messageExchange);
     }
-};
-
-const prepareUpdateStatement = (table,reqestBody) =>{
-
-    let statement = [`UPDATE ${table} SET`];
-    const keys = Object.keys(reqestBody);
-    keys.forEach((key,index) =>{
-        statement.push(` ${key} = $${index+1}`);
-        if ((index < keys.length-1)) statement.push(",");
-    });
-    statement.push(` WHERE id = $${keys.length+1} RETURNING id, status, type, state, city, address, price, created_on, image_url;`);
-    return statement.join("");
 };
 
 const updateProperty = (req, res) =>{
