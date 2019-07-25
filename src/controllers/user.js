@@ -18,37 +18,54 @@ const createUser = (requestBody) =>{
 };
 
 const signupUser = (req, res) =>{
-    // const validationError = validationResult(req);
-    // if (!validationError.isEmpty()){
-    //     console.log(req.body);
-    //     return res.status(422).json({
-    //         status:"Error",
-    //         error:validationError.array()
-    //     });
-    // }
+    const table = "USERS";
     const saltRounds = 10;
     const user = createUser(req.body);
-    const sqlStatement = "INSERT INTO USERS(email, first_name, last_name, password, phone_number, address) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *";
-    bcrypt.hash(user.password, saltRounds)
+    const sqlStatement = `INSERT INTO USERS(email, first_name, last_name, password,
+         phone_number, address) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`;
+    const validationError = validationResult(req);
+    
+    if (!validationError.isEmpty()){
+        console.log(req.body);
+        return res.status(422).json({
+            status:"Error",
+            error:validationError.array()[0].msg
+        });
+    }
+
+    db.getConnectionPool().connect((err, client, release) =>{
+        if (err) {
+            return res.status(500)
+            .send({status:"error", error:"Server error"});
+        }
+
+        bcrypt.hash(user.password, saltRounds)
         .then(hash =>{
-            if (!hash){
-                console.log("failed to hash password");
-                return res.status(400)
-                          .send({
-                              status:"error",
-                              error:"Failed to sign in!"
-                          });
-            } 
+
             user.password = hash;
             const {email, first_name, last_name,password,phone_number, address} = user;
             const values = [email, first_name, last_name, password, phone_number, address];
-            db.query(sqlStatement, values)
-                .then(result => {
+
+            if (!hash){
+                return Promise.reject(res.status(400)
+                .send({status:"error", error:"Failed to sign in!"}));
+            }
+
+            db.findOne(table, {email:email})
+            .then(result =>{
+                if (result.rowCount > 0){
+                    return Promise.reject(res.status(409)
+                    .send({status:"error", error:"Email Already exist"}));
+                }
+
+                client.query(sqlStatement, values)
+                .then(result =>{
                     const record = result.rows[0];
                     const payload = {id:record.id, email:record.email };
                     const token = TokenGenerator.generateToken(payload);
                     process.env.TEMP_TOKEN = token;
-                    res.status(201).json({
+                    release();
+                    return res.status(201).json({
                         status: "success",
                         data:{
                             token:token,
@@ -59,13 +76,11 @@ const signupUser = (req, res) =>{
                         }
                     });
                 })
-                .catch(err => res.status(412).json({
-                    status:"error", error:err.detail
-                }));
+            })
+            .catch(err => err);
         })
-        .catch(err => res.status(412).json({
-            status:"error", error:err.message
-        }));
+        .catch(err => err);
+    });
 };
 
 const signinUser = (req, res) =>{
@@ -79,28 +94,22 @@ const signinUser = (req, res) =>{
     const plainTextPassword = req.body.password;
     db.findOne("Users", {email:req.body.email})
         .then(results =>{
-            if (results.rowCount < 1 ){
-                return res.status(401)
-                          .send({
-                              status:"error",
-                              error:"Wrong Email!"
-                            });
+            if (results.rowCount < 1){
+                return Promise.reject(res.status(400)
+                .send({status:"error", error:"Wrong Email or Password!"}));
             } 
             const record = results.rows[0];
             const hash = record.password;
             bcrypt.compare(plainTextPassword, hash)
                 .then(positive =>{
                     if (!positive){ 
-                        return res.status(401)
-                          .send({
-                              status:"error",
-                              error:"Wrong Password!"
-                            });
+                        return Promise.reject(res.status(400)
+                        .send({status:"error",error:"Wrong Email or Password!"}));
                     }
                     const payload = {id:record.id, email:record.emial};
                     const token = TokenGenerator.generateToken(payload);
                     process.env.TEMP_TOKEN = token;
-                    res.status(200)
+                    return res.status(200)
                     .json({
                         status:"success",
                         data:{
@@ -112,13 +121,9 @@ const signinUser = (req, res) =>{
                         }
                     });
                 })
-                .catch(err => res.status(412).json({
-                    status:"error", error:err.message
-                }));
+                .catch(err => err);
         })
-        .catch(err => res.status(412).json({
-            status:"error", error:err.detail
-        }));
+        .catch(err => err);
 };
 
 export {signupUser, signinUser};
