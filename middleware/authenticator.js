@@ -17,6 +17,17 @@ class Authenticator{
             });
         }
     }
+
+    static getPayload (token, secret){
+        try{
+            const payload = jwt.decode(token, secret);
+            const {exp} = payload;
+            return (Date.now() >= exp * 1000) ? undefined : payload;
+        } catch(error){
+            console.log("Error Decoding token:", error);
+            throw error;
+        }
+    }
 }
 
 export default Authenticator;

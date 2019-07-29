@@ -46,8 +46,7 @@ const insertProperty = (database, property, messageExchange) =>{
                 return messageExchange.res.status(201)
                     .json({status:"success", data:data});
             })
-            .catch(err => err);
-            
+            .catch(err => err);    
 };
 
 const postPropertyAdvert = (req, res) =>{
@@ -132,7 +131,6 @@ const markAsSold = (req, res) =>{
                 return Promise.reject(res.status(400).
                 json({status:"error", error:"No record updated!"}));
             }
-            console.log("Owner:", result.rows[0].owner,"\ndecoded token id:",req.decodedToken.id);
             return res.status(200).json({status:"success", data:result.rows[0]});
         })
         .catch(err => err);
@@ -196,7 +194,6 @@ const findAllProperties = (req, res) =>{
                         return Promise.reject(res.status(404)
                         .json({status:"error", error:"No record found"}));
                     } 
-                    console.log(results.rows);
                     return res.status(200).json({
                             status:"success",
                             data:results.rows

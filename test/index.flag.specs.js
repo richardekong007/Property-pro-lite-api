@@ -10,6 +10,7 @@ import '../test/index.user.specs';
 const db = DB.getInstance();
 
 const responseBodyKeys = ['status','data'];
+const errorResBodyKeys = ['status', 'error'];
 const flagResponseKey = ['property_id','reason','description','created_on'];
 const expect = chai.expect;
 chai.use(chaiHttp);
@@ -73,6 +74,19 @@ describe('api.v1 routes: Flag', () =>{
                     })
                     .catch(err => expect(err).to.be.rejected);
 
+        });
+
+        it ('Should flag error 422 on errorneous request', () =>{
+            return chai.request(app)
+                .post('/flag')
+                .send({})
+                .then(res => {
+                        expect(res).to.have.status(422);
+                        expect(res.body).to.include.keys(errorResBodyKeys)
+                        expect(res.body.status).to.eqls('error');
+                        expect(res.body.error).to.not.be.undefined;
+                })
+                .catch(err => expect(err).to.be.rejected);
         });
     });
 });

@@ -21,37 +21,25 @@ const createFlag = (requestBody) =>{
 const flagProperty = (req, res) =>{
     const validatorError = validationResult(req);
     if (!validatorError.isEmpty()){
-        res.status(422).json({
+        return res.status(422).json({
             status:'error',
             error:validatorError.array()
-        })
+        });
     }
 
     const flag = createFlag(req.body);
     const {property_id,created_on,reason,description} = flag;
     const values = [property_id, created_on, reason, description];
-    const sqlStatement = 'INSERT INTO FLAGS(property_id, created_on, reason, description) VALUES ($1,$2,$3,$4) RETURNING *';
+    const sqlStatement = `INSERT INTO FLAGS(property_id, created_on, 
+        reason, description) VALUES ($1,$2,$3,$4) RETURNING *`;
     db.query(sqlStatement, values)
         .then(results =>{
-            if (results.rowCount < 1){
-                res.status(400).json({
-                    status:'error',
-                    error:'No flag created!'
-                });
-            }
             const record = results.rows[0];
             res.status(201).json({
                 status:'success',
                 data: record
             });
         })
-        .catch(err =>{
-            res.status(400).json({
-                status:"error",
-                error:err.detail
-            });
-        });
-    
 };
 
 export default flagProperty;
