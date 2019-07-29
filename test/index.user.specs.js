@@ -157,8 +157,7 @@ describe("api.v1 Route: user", () =>{
                         expect(res.body).to.include.keys(resBodyKeys);
                         expect(res.body.status).to.be.eqls("success");
                         expect(res.body.data).to.not.be.eqls(
-                        `<a id = 'reset-link' href = '${req.protocol}://${req.hostname}:${process.env.PORT || 3999}`
-                        +`${req.baseUrl}/auth/reset-password-step2/${id}/${token}'>Please click here to reset  your password</a>`
+                        `<a id = 'reset-link' href = '/auth/reset-password-step2/${id}/${token}'>Please click here to reset  your password</a>`
                         );
                     })
                     .catch(err => expect(err).to.be.rejected);
