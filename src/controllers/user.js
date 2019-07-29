@@ -145,7 +145,7 @@ const sendResetLink = (req, res) => {
             const payload = {id:id, email:email};
             const secret = `${password}-${process.env.JWT_SECRET}`;
             const token = TokenGenerator.generatePasswordResetToken(payload,secret);
-            const resetLink = `<a id = 'reset-link' href = '/auth/reset-password-step2/${payload.id}`
+            const resetLink = `<a id = 'reset-link' href = 'auth/reset-password-step2/${payload.id}`
                              +`/${token}'>Please click here to reset  your password</a>`;
             res.status(200).json({status:"success", data:resetLink});
 
