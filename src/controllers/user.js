@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 import TokenGenerator from '../tokenGenerator.js';
 import Db from "../db/db.js";
 import {validationResult} from "express-validator"; 
+import validator from "validator";
+import Authenticator from "../../middleware/authenticator.js";
 
 const db = Db.getInstance();
 
@@ -26,7 +28,6 @@ const signupUser = (req, res) =>{
     const validationError = validationResult(req);
     
     if (!validationError.isEmpty()){
-        console.log(req.body);
         return res.status(422).json({
             status:"Error",
             error:validationError.array()[0].msg
@@ -35,7 +36,7 @@ const signupUser = (req, res) =>{
 
     db.getConnectionPool().connect((err, client, release) =>{
         if (err) {
-            return res.status(500)
+             res.status(500)
             .send({status:"error", error:"Server error"});
         }
 
@@ -45,11 +46,6 @@ const signupUser = (req, res) =>{
             user.password = hash;
             const {email, first_name, last_name,password,phone_number, address} = user;
             const values = [email, first_name, last_name, password, phone_number, address];
-
-            if (!hash){
-                return Promise.reject(res.status(400)
-                .send({status:"error", error:"Failed to sign in!"}));
-            }
 
             db.findOne(table, {email:email})
             .then(result =>{
@@ -78,8 +74,7 @@ const signupUser = (req, res) =>{
                 })
             })
             .catch(err => err);
-        })
-        .catch(err => err);
+        });
     });
 };
 
@@ -126,4 +121,101 @@ const signinUser = (req, res) =>{
         .catch(err => err);
 };
 
-export {signupUser, signinUser};
+const sendResetLink = (req, res) => {
+
+    const table = "USERS";
+    const email = req.body.email;
+    if (!(req.body.hasOwnProperty("email")) || !(req.body.email)){
+        return res.status(422).json({status:"error", error:"Failed to provide an email"});
+    }
+
+    if (!validator.isEmail(email)){
+        return res.status(422).json({status:"error", error:"Invalid email!"});
+    }
+
+    db.findOne(table, {email:email})
+        .then(result => {
+            if (result.rowCount < 1){
+                return Promise.reject(res.status(400)
+                .send({status:"error", error:"Email not recognised, "
+                +"Please provide your email or"
+                +" Signup again!"}));
+            }
+            const {id, password} = result.rows[0];
+            const payload = {id:id, email:email};
+            const secret = `${password}-${process.env.JWT_SECRET}`;
+            const token = TokenGenerator.generatePasswordResetToken(payload,secret);
+            const resetLink = `<a id = 'reset-link' href = '${req.protocol}:`
+                             +`//${req.hostname}:${process.env.PORT || 3999}`
+                             +`${req.baseUrl}/auth/reset-password-step2/${payload.id}`
+                             +`/${token}'>Please click here to reset  your password</a>`;
+            res.status(200).json({status:"success", data:resetLink});
+
+        })
+        .catch(err => err);
+};
+
+const receiveResetParams = (req, res) => {
+    const id = parseInt(req.params.id);
+    const token = req.params.token;
+    const table = "USERS";
+    db.findOne(table, {id:id})
+    .then(result =>{
+        if (result.rowCount < 1){
+            return Promise.reject(res.status(404)
+            .json({status:"error", error:"Account doesn't exist"}));
+        }
+        const {password} = result.rows[0];
+        const secret = `${password}-${process.env.JWT_SECRET}`;
+        const {id} = Authenticator.getPayload(token,secret);
+        return res.status(200).json({status:"success", data:{id:id, token:token}});
+    })
+    .catch(err => err);
+};
+
+const resetPassword = (req, res) =>{
+    const table = "USERS";
+    const sql = `UPDATE ${table} SET password = $1 WHERE id = $2 RETURNING *;`;
+    const {id, token, password} = req.body;
+    const validationError = validationResult(req);
+    if (!validationError.isEmpty()){
+        return res.status(422).json({
+            status:"error", 
+            error: validationError.array()[0].msg
+        });
+    }
+
+    db.findOne(table, {id:id})
+    .then(result =>{
+        if (result.rowCount < 1){
+            return Promise.reject(res.status(404)
+            .json({status:"error", error:"Account doesn't exist"}))
+        }
+        const {oldPassword} = result.rows[0];
+        const secret = `${oldPassword}-${process.env.JWT_SECRET}`;
+        const payload = Authenticator.getPayload(token,secret);
+        if (!payload) return Promise.reject(res.status(400)
+            .json({status:"error", error:"Token expired, restart proecess."}));
+        const hash = bcrypt.hashSync(password,10);
+        db.getConnectionPool().connect((err, client, releaseClient) =>{
+            if (err) {
+                return Promise.reject(res.status(500)
+                .json({status:"error", error:"Sever error!"}));
+            }
+            client.query(sql,[hash,id])
+            .then(result =>{
+                releaseClient();
+                if (result.rowCount < 1) return Promise.reject(res.status(400)
+                    .json({status:"error", error:"Password reset Failed!"}));
+
+                return res.status(200).json({status:"success", 
+                    data:"Your password has been successfully reset"});  
+            })
+            .catch(err => err);
+        });
+
+    })
+    .catch(err => err);
+};
+
+export {signupUser, signinUser, sendResetLink, receiveResetParams, resetPassword};

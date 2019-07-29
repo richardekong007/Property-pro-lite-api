@@ -6,6 +6,7 @@ import chaiAsPromised from "chai-as-promised";
 import Property from "../src/entity/property.js";
 import Db from '../src/db/db.js';
 import "../test/index.user.specs.js";
+import propertyTemplate from '../src/db/tables/properties.js';
 
 const db = Db.getInstance();
 const expect = chai.expect;
@@ -43,9 +44,8 @@ describe("api.v1 routes: Property", () =>{
                            .then(result => {
                                 cb();
                                 property.id = result.rows[0].id;
-                                console.log(result.rows[0]);
                            })
-                           .catch(err => console.log(err));
+                           .catch(err => err);
                     });
         
     });
@@ -75,6 +75,17 @@ describe("api.v1 routes: Property", () =>{
                 })
                 .catch(err => expect(err).to.be.rejected);    
         });
+
+        it ("Should throw error 422 with invalid property input", () =>{
+            return chai.request(app)
+                    .post("/property")
+                    .send({})
+                    .then(res =>{
+                        expect(res).to.have.status(422);
+                    })
+                    .catch(err => expect(err).to.be.rejected);
+        });
+
     });
 
     describe("GET/property/<:propert_id>", () =>{
@@ -92,6 +103,13 @@ describe("api.v1 routes: Property", () =>{
                     expect(res.body.data).to.include.keys([...propertyDataKeys, "owner_email", "owner_phone_number"]); 
                 })
                 .catch((err) => expect(err).to.be.rejected);
+        });
+
+        it ("Should throw error 404 for requests with wrong id", () =>{
+            return chai.request(app)
+                    .get(`/property/0`)
+                    .then(res => expect(res).to.have.status(404))
+                    .catch(err => expect(err).to.be.rejected);
         });
     });
 

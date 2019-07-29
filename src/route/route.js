@@ -2,8 +2,9 @@ import Router from "express";
 import multer from "multer";
 import signupValidator from "../../middleware/validators/signupValidator.js";
 import signinValidator from "../../middleware/validators/signinValidator.js";
+import resetPasswordValidator from "../../middleware/validators/resetPasswordValidator.js";
 import postPropertyValidator from "../../middleware/validators/postPropertyValidator.js";
-import {signupUser, signinUser} from "../controllers/user.js";
+import {signupUser, signinUser, sendResetLink, receiveResetParams, resetPassword} from "../controllers/user.js";
 import Authenticator from "../../middleware/authenticator.js";
 import {postPropertyAdvert, updateProperty, markAsSold, deleteProperty, findAllProperties,
      findPropertyByType, findPropertyById} from "../controllers/property.js";
@@ -39,6 +40,12 @@ const upload = multer({storage:storagePolicy, limits:{
 router.post("/auth/signup", signupValidator, signupUser);
 
 router.post("/auth/signin", signinValidator , signinUser); 
+
+router.post("/auth/reset-password-step1",  sendResetLink);
+
+router.get("/auth/reset-password-step2/:id/:token", receiveResetParams);
+
+router.post("/auth/reset-password-step2", resetPasswordValidator, resetPassword);
 
 router.post("/property", Authenticator.authenticate, upload.single('image_url'), postPropertyValidator, postPropertyAdvert); 
 

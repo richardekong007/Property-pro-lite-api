@@ -11,6 +11,14 @@ class TokenGenerator{
             {expiresIn:process.env.EXPIRES_IN}
         );
     }
+
+    static generatePasswordResetToken (payload, secret){
+        return jwt.sign(
+            payload,
+            secret,
+            {expiresIn:Math.floor(Date.now()/1000)+30}
+        );
+    }
 }
 
 export default TokenGenerator;
