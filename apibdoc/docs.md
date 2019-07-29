@@ -28,6 +28,36 @@ This page presents all routes and resource available in this Application Program
         - status: `success` (string) - This denotes the status of this operation
         - data (UserResponseData)
 
+### Submit user's email for password reset [POST/auth/reset-password-step1]
++ Request (application/json)
+    + Attributes
+        - email: `johndoe@mail.net` (string) - This denotes the user's email, for looking up the password to be reset
+
++ Response 200 (application/json)
+    + Attributes
+        - status: `success` (string) - This denotes the status of this response
+        - data (PasswordResetLink)
+
+### Retreive User's id and token [GET/auth/reset-password-step2/{id}/{token}]
++ Parameter
+    - id: `1` (number) - This denotes user id from the decoded payload
+    - token: `sjahfkahfeurueefw.23mfw734834wkr2834424.hsfw8344384bfe902238` (string) - This denotes token generated from previous request to capture a valid password reset link
+
++ Response 200 (application/json)
+    + Attributes
+        - status: `success` (string) - This denotes the status of this response
+        - data (PasswordResetParam)
+
+### Submit new password [POST/auth/reset-password-step2]
++ Request (application/json)
+    + Attributes
+        - password:`Johndoe123` (string) - This denotes the new password
+
++ Response 200 (application/json)
+    + Attributes
+        - status: `success` (string) - This denotes the status of this operation
+        - data: `Your password has been successfully reset` (string) - This denotes the password reset response
+
 # Group Property
 
 ## Property Collection [/property]
@@ -120,6 +150,13 @@ This page presents all routes and resource available in this Application Program
 - password: `@%%^$#&` (string) - This denotes the password of the user
 - phone_number: `08034734638` (string) - This denotes the phone number of the user
 - address: `No.5 Main Street` (string) - This denotes the address of the user
+
+## PasswordResetLink (object)
+- link: `<a href = 'https://property-pro-lite-api.herokuapp.com/api/v1/auth/reset-password-step2/1/token'>Click here to Reset your Password</a>` (string) - This denotes the password reset link
+
+## PasswordResetParam (object)
+- id:`1` (number) - This denotes the id from payload of a decoded token
+- token:`ajdhfhfe4834492847ndsjf.9349fhkla3r83h38424ncn38.93493483ebkdbdevu4i24gfk7346347a7&#&$` (string) - This denotes the generated token with JWT and an associated algorithm
 
 ## Property (object)
 - price: `60000` (number) - This denotes the price of this property
