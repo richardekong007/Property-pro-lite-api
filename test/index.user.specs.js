@@ -147,18 +147,13 @@ describe("api.v1 Route: user", () =>{
         it("Should accept email and provide reset link with status 200", () =>{
             const req = chai.request(app);
             const email = "bong2@mail.net";
-            const id = 2;
-            const secret = `${process.env.JWT_SECRET}`;
-            const token = TokenGenerator.generatePasswordResetToken({id:id,email:email}, secret);
             return req.post("/auth/reset-password-step1")
                     .send({email:email})
                     .then(res =>{
                         expect(res).to.have.status(200);
                         expect(res.body).to.include.keys(resBodyKeys);
                         expect(res.body.status).to.be.eqls("success");
-                        expect(res.body.data).to.not.be.eqls(
-                        `<a id = 'reset-link' href = 'auth/reset-password-step2/${id}/${token}'>Please click here to reset  your password</a>`
-                        );
+                        expect(res.body.data).to.not.be.undefined;
                     })
                     .catch(err => expect(err).to.be.rejected);
         });
